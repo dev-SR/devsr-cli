@@ -88,7 +88,7 @@ export default async function youtubeDownloader() {
         process.exit(0);
     }
 
-    let outputTemplate = "";
+    let outputTemplate: string;
     if (downloadType === "single") {
         // uploader_title_res_.ext
         outputTemplate = "%(uploader)s_%(title)s_%(height)sp.%(ext)s";

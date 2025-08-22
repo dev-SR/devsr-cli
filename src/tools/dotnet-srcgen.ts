@@ -1,4 +1,4 @@
-import { intro, text, select, cancel, isCancel } from "@clack/prompts";
+import { intro, text, cancel, isCancel } from "@clack/prompts";
 import fs from "fs-extra";
 import path from "path";
 
