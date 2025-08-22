@@ -1,10 +1,10 @@
 {
-  "name": "dev-sr",
-  "version": "1.0.0",
-  "description": "CLI tool to download YouTube videos with yt-dlp + ffmpeg",
+  "name": "devsr",
+  "version": "1.0.1",
+  "description": "CLI helper tool - Generate templates, download YouTube videos using yt-dlp etc",
   "main": "dist/index.js",
   "bin": {
-    "dev-sr": "dist/index.js"
+    "devsr": "dist/index.js"
   },
   "scripts": {
     "build": "tsc",
@@ -19,6 +19,17 @@
     "ts-node": "^10.9.2",
     "@types/fs-extra": "^11.0.1"
   },
-  "keywords": ["yt-dlp", "youtube", "cli", "ffmpeg", "downloader"],
+  "keywords": [
+    "cli",
+    "yt-dlp",
+    "youtube video downloader",
+    "template generator"
+  ],
+  "author": "Sharukh Rahman",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dev-SR/devsr-cli.git"
+  },
+  "homepage": "https://github.com/dev-SR/devsr-cli",
   "license": "MIT"
 }
