@@ -2,14 +2,12 @@
 
 <!-- TOC -->
 
-* [CLI](#cli)
-  * [Setup](#setup)
-    * [🔨 Build & link locally with pnpm](#-build--link-locally-with-pnpm)
-    * [📦 Publish to npm (public package)](#-publish-to-npm-public-package)
-    * [🔁 Updating during dev](#-updating-during-dev)
-  * [`yt-dlp` setups](#yt-dlp-setups)
-    
-    <!-- TOC -->
+- [CLI](#cli)
+  - [Setup](#setup)
+    - [🔨 Build \& link locally with pnpm](#-build--link-locally-with-pnpm)
+    - [📦 Publish to npm (public package)](#-publish-to-npm-public-package)
+    - [🔁 Updating during dev](#-updating-during-dev)
+  - [`yt-dlp` setups](#yt-dlp-setups)
 
 ## Setup
 
@@ -25,6 +23,8 @@ pnpm run build
 # 3. Link globally (makes dev-sr command available everywhere)
 pnpm link --global
 ```
+
+
 
 ### 📦 Publish to npm (public package)
 
@@ -64,6 +64,8 @@ pip install -U yt-dlp
 
 ```bash
 winget install "FFmpeg (Essentials Build)"
+# linux
+sudo apt install ffmpeg -y
 ```
 
 3. Download youtube cookies with logged in using [Get cookies.txt LOCALLY - Chrome Web Store](https://chromewebstore.google.com/detail/get-cookiestxt-locally/cclelndahbckbenkjhflpdbgdldlbecc?pli=1) extension.
