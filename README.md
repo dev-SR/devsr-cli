@@ -20,11 +20,12 @@ pnpm install
 # 2. Build project (make sure "build" script exists in package.json)
 pnpm run build
 
+# 3.0 Creates a global bin directory
+pnpm setup
+
 # 3. Link globally (makes dev-sr command available everywhere)
 pnpm link --global
 ```
-
-
 
 ### 📦 Publish to npm (public package)
 
