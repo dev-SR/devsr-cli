@@ -17,13 +17,17 @@
 # 1. Install dependencies
 pnpm install
 
-# 2. Build project (make sure "build" script exists in package.json)
+# 2. Dev run 
+pnpm dev
+
+# Publish locally in global 
+# 3. Build project (make sure "build" script exists in package.json)
 pnpm run build
 
-# 3.0 Creates a global bin directory
+# 3.1 Creates a global bin directory
 pnpm setup
 
-# 3. Link globally (makes dev-sr command available everywhere)
+# 3.2 Link globally (makes dev-sr command available everywhere)
 pnpm link --global
 ```
 
@@ -70,6 +74,13 @@ sudo apt install ffmpeg -y
 ```
 
 3. Download youtube cookies with logged in using [Get cookies.txt LOCALLY - Chrome Web Store](https://chromewebstore.google.com/detail/get-cookiestxt-locally/cclelndahbckbenkjhflpdbgdldlbecc?pli=1) extension.
+
+First time using  `devsr` you have enter full path to the cookies.txt file, but after that it will be saved in `config.json` for future use.
+
+```bash
+pwd
+```
+
 
 `yt-dlp ` commands:
 
