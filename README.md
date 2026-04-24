@@ -49,7 +49,17 @@ First, make sure you’re logged in:
 
 Then publish:
 
-`pnpm publish --access public`
+```bash
+# get token from https://www.npmjs.com/settings/username/tokens ; 'Bypass two-factor authentication (2FA)' if required
+npm config set //registry.npmjs.org/:_authToken=YOUR_TOKEN
+
+pnpm publish --access=public
+
+# When creating new version use
+pnpm version patch
+pnpm version minor
+pnpm version major
+```
 
 ---
 
