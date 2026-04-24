@@ -1,6 +1,8 @@
 import { intro, outro, multiselect, select, cancel, isCancel } from '@clack/prompts';
 import { readdirSync } from 'fs';
 import { execSync } from 'child_process';
+import { mdToPdf } from 'md-to-pdf';
+import markedKatex from 'marked-katex-extension';
 
 function checkPandoc(): boolean {
 	try {
@@ -13,16 +15,6 @@ function checkPandoc(): boolean {
 
 export default async function mdConverter() {
 	intro('📄 Markdown Converter');
-
-	// Check pandoc
-	if (!checkPandoc()) {
-		console.error('❌ pandoc not found in PATH.');
-		console.error('Install with:');
-		console.error(
-			'sudo apt install pandoc texlive-latex-base texlive-xetex texlive-latex-recommended'
-		);
-		process.exit(1);
-	}
 
 	// Get markdown files in current directory
 	const files = readdirSync(process.cwd()).filter((f) => f.endsWith('.md'));
@@ -63,24 +55,37 @@ export default async function mdConverter() {
 		process.exit(0);
 	}
 
+	// Check pandoc if non-pdf format selected
+	if (format !== 'pdf' && !checkPandoc()) {
+		console.error('❌ pandoc not found in PATH.');
+		console.error('For non-PDF formats, pandoc is required.');
+		console.error('Install with: sudo apt install pandoc');
+		process.exit(1);
+	}
+
 	// Conversion loop
 	for (const file of selectedFiles as string[]) {
 		const outputFile = file.replace(/\.md$/, `.${format}`);
 
-		let cmd = '';
-
-		if (format === 'pdf') {
-			cmd = `pandoc "${file}" -o "${outputFile}" --pdf-engine=xelatex`;
-		} else {
-			cmd = `pandoc "${file}" -o "${outputFile}"`;
-		}
-
 		console.log(`\n▶ Converting: ${file} -> ${outputFile}`);
 
 		try {
-			execSync(cmd, { stdio: 'inherit' });
+			if (format === 'pdf') {
+				await mdToPdf(
+					{ path: file },
+					{
+						dest: outputFile,
+						launch_options: { args: ['--no-sandbox', '--disable-setuid-sandbox'] },
+						css: `@import "https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css";`,
+						marked_extensions: [markedKatex({ throwOnError: false })]
+					}
+				);
+			} else {
+				const cmd = `pandoc "${file}" -o "${outputFile}"`;
+				execSync(cmd, { stdio: 'inherit' });
+			}
 		} catch (err) {
-			console.error(`❌ Failed to convert ${file}`);
+			console.error(`❌ Failed to convert ${file}:`, err instanceof Error ? err.message : String(err));
 		}
 	}
 

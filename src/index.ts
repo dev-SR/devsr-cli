@@ -1,19 +1,20 @@
 #!/usr/bin/env node
 import { intro, outro, select, cancel, isCancel } from '@clack/prompts';
+import promptBlocks from './tools/prompt-blocks';
 import youtubeDownloader from './tools/youtube';
-import dotnetProject from './tools/dotnet-project';
-import dotnetSrcGen from './tools/dotnet-srcgen';
 import mdConverter from './tools/md-converter';
+import miscUtils from './tools/misc-utils';
+
 async function main() {
 	intro('⚡ dev-sr - Multi-tool CLI');
 
 	const choice = await select({
 		message: 'Choose a tool',
 		options: [
+			{ value: 'prompt-blocks', label: '🧠 AI Prompt Blocks' },
 			{ value: 'yt', label: '🎬 YouTube Downloader' },
 			{ value: 'md-convert', label: '📄 Markdown Converter' },
-			{ value: 'dotnet-project', label: '🟦 .NET Project Generator' },
-			{ value: 'dotnet-srcgen', label: '🟦 .NET Service/Repo/Controller Generator' },
+			{ value: 'misc', label: '🧰 Misc Utils' },
 			{ value: 'exit', label: '❌ Exit' }
 		]
 	});
@@ -24,17 +25,19 @@ async function main() {
 	}
 
 	switch (choice) {
+		case 'prompt-blocks':
+			await promptBlocks();
+			break;
 		case 'yt':
 			await youtubeDownloader();
 			break;
-		case 'dotnet-project':
-			await dotnetProject();
-			break;
-		case 'dotnet-srcgen':
-			await dotnetSrcGen();
-			break;
 		case 'md-convert':
 			await mdConverter();
+			break;
+		case 'misc':
+			await miscUtils();
+			break;
+		default:
 			break;
 	}
 

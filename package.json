@@ -1,6 +1,6 @@
 {
   "name": "devsr",
-  "version": "1.0.1",
+  "version": "1.2.1",
   "description": "CLI helper tool - Generate templates, download YouTube videos using yt-dlp etc",
   "main": "dist/index.js",
   "bin": {
@@ -13,7 +13,10 @@
   "dependencies": {
     "@clack/prompts": "^0.7.0",
     "fs-extra": "^11.1.1",
-    "global": "link:../../../../.local/share/pnpm/global/5/node_modules/global"
+    "global": "link:../../../../.local/share/pnpm/global/5/node_modules/global",
+    "katex": "^0.16.45",
+    "marked-katex-extension": "^5.1.8",
+    "md-to-pdf": "^5.2.5"
   },
   "devDependencies": {
     "@types/fs-extra": "^11.0.1",

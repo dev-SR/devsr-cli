@@ -5,9 +5,11 @@
 - [CLI](#cli)
   - [Setup](#setup)
     - [🔨 Build \& link locally with pnpm](#-build--link-locally-with-pnpm)
+      - [Re-build \& re-link (if already linked globally)](#re-build--re-link-if-already-linked-globally)
     - [📦 Publish to npm (public package)](#-publish-to-npm-public-package)
     - [🔁 Updating during dev](#-updating-during-dev)
   - [`yt-dlp` setups](#yt-dlp-setups)
+  - [AI Prompt Blocks](#ai-prompt-blocks)
 
 ## Setup
 
@@ -28,6 +30,14 @@ pnpm run build
 pnpm setup
 
 # 3.2 Link globally (makes dev-sr command available everywhere)
+pnpm link --global
+```
+
+#### Re-build & re-link (if already linked globally)
+
+```bash
+pnpm run build
+pnpm unlink --global
 pnpm link --global
 ```
 
@@ -127,3 +137,38 @@ yt-dlp -f "140+137" --merge-output-format mp4 --cookies cookies.txt URL
      ```bash
      yt-dlp -f "bv[height<=1080]+ba" URL
      ```
+
+
+## AI Prompt Blocks
+
+Inside `Misc Utils`, there is now an `AI Prompt Blocks` utility for reusable instruction blocks that go before pasted user content.
+
+It includes prompt templates for:
+
+- simple explanation
+- notes generation
+- step-by-step problem solving
+- code explanation
+- code generation
+- debugging
+- system design explanation
+- summarization
+- actionable notes / next steps
+- comparison of concepts
+
+Recommended workflow:
+
+1. Copy your source content first.
+2. Open `devsr` → `Misc Utils` → `AI Prompt Blocks`.
+3. Pick a prompt.
+4. Choose `Merge with clipboard and copy back`.
+5. Paste the merged result into your AI tool.
+
+You can also choose `Copy prompt block only` if you want to paste the source content manually after the instruction block.
+
+Clipboard support uses common system tools:
+
+- macOS: `pbcopy` / `pbpaste`
+- Linux Wayland: `wl-copy` / `wl-paste`
+- Linux X11: `xclip` or `xsel`
+- Windows: `clip` / PowerShell clipboard access

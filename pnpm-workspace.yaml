@@ -1,2 +1,4 @@
+allowBuilds:
+  puppeteer: true
 overrides:
   global: link:../../../../.local/share/pnpm/global/5/node_modules/global
