@@ -1,6 +1,6 @@
 {
   "name": "@dev-sr/devsr",
-  "version": "2.0.0",
+  "version": "1.0.0",
   "description": "CLI helper tool - Generate templates, download YouTube videos using yt-dlp etc",
   "main": "dist/index.js",
   "bin": {
