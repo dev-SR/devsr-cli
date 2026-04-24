@@ -13,7 +13,6 @@
   "dependencies": {
     "@clack/prompts": "^0.7.0",
     "fs-extra": "^11.1.1",
-    "global": "link:../../../../.local/share/pnpm/global/5/node_modules/global",
     "katex": "^0.16.45",
     "marked-katex-extension": "^5.1.8",
     "md-to-pdf": "^5.2.5"
