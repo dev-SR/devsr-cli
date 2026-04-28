@@ -2,6 +2,12 @@ import { execSync } from 'child_process';
 import { select, cancel, isCancel, confirm } from '@clack/prompts';
 import { promptTemplates } from './prompt-library';
 
+interface PromptBlocksOptions {
+	category?: 'all' | 'Learning' | 'Coding' | 'Productivity';
+	template?: string;
+	action?: 'clipboard-merge' | 'clipboard-prompt' | 'print';
+}
+
 function getClipboardCommand(type: 'read' | 'write'): string | null {
 	const isMac = process.platform === 'darwin';
 	const isWindows = process.platform === 'win32';
@@ -78,72 +84,21 @@ function writeClipboard(content: string): boolean {
 	}
 }
 
-export default async function promptBlocks() {
-	const category = await select({
-		message: 'Choose a prompt category',
-		options: [
-			{ value: 'all', label: 'All categories' },
-			{ value: 'Learning', label: 'Learning' },
-			{ value: 'Coding', label: 'Coding' },
-			{ value: 'Productivity', label: 'Productivity' }
-		]
-	});
-
-	if (isCancel(category)) {
-		cancel('Cancelled');
-		process.exit(0);
-	}
-
+async function executePromptBlocks(
+	category: 'all' | 'Learning' | 'Coding' | 'Productivity',
+	selectedTemplate: string,
+	action: 'clipboard-merge' | 'clipboard-prompt' | 'print'
+) {
 	const filteredTemplates =
 		category === 'all'
 			? promptTemplates
 			: promptTemplates.filter((template) => template.category === category);
-
-	const selectedTemplate = await select({
-		message: 'Choose a prompt block',
-		options: filteredTemplates.map((template) => ({
-			value: template.name,
-			label: `${template.name} (${template.category})`,
-			hint: template.description
-		}))
-	});
-
-	if (isCancel(selectedTemplate)) {
-		cancel('Cancelled');
-		process.exit(0);
-	}
 
 	const template = filteredTemplates.find((item) => item.name === selectedTemplate);
 
 	if (!template) {
 		console.log('❌ Prompt template not found.');
 		process.exit(1);
-	}
-
-	const action = await select({
-		message: 'Choose what to do with this prompt',
-		options: [
-			{
-				value: 'clipboard-merge',
-				label: 'Merge with clipboard and copy back',
-				hint: 'Best for paste-once workflow'
-			},
-			{
-				value: 'clipboard-prompt',
-				label: 'Copy prompt block only',
-				hint: 'Best when you will paste content manually'
-			},
-			{
-				value: 'print',
-				label: 'Print prompt to terminal',
-				hint: 'Useful if clipboard tools are unavailable'
-			}
-		]
-	});
-
-	if (isCancel(action)) {
-		cancel('Cancelled');
-		process.exit(0);
 	}
 
 	const promptBlock = `${template.prompt}\n`;
@@ -206,4 +161,75 @@ export default async function promptBlocks() {
 	}
 
 	console.log(`\n✅ Merged "${template.name}" with current clipboard content and copied it back.`);
+}
+
+export default async function promptBlocks(options?: PromptBlocksOptions) {
+	let category: 'all' | 'Learning' | 'Coding' | 'Productivity';
+	let selectedTemplate: string;
+	let action: 'clipboard-merge' | 'clipboard-prompt' | 'print';
+
+	// Use provided options or prompt user
+	if (options?.category) {
+		category = options.category;
+	} else {
+		const categoryResult = await select({
+			message: 'Choose a prompt category',
+			options: [
+				{ value: 'all', label: 'All categories' },
+				{ value: 'Learning', label: 'Learning' },
+				{ value: 'Coding', label: 'Coding' },
+				{ value: 'Productivity', label: 'Productivity' }
+			]
+		});
+
+		if (isCancel(categoryResult)) {
+			cancel('Cancelled');
+			process.exit(0);
+		}
+
+		category = categoryResult as 'all' | 'Learning' | 'Coding' | 'Productivity';
+	}
+
+	if (options?.template) {
+		selectedTemplate = options.template;
+	} else {
+		const filteredTemplates =
+			category === 'all'
+				? promptTemplates
+				: promptTemplates.filter((template) => template.category === category);
+
+		const templateResult = await select({
+			message: 'Choose a prompt block',
+			options: filteredTemplates.map((t) => ({ value: t.name, label: t.name }))
+		});
+
+		if (isCancel(templateResult)) {
+			cancel('Cancelled');
+			process.exit(0);
+		}
+
+		selectedTemplate = templateResult as string;
+	}
+
+	if (options?.action) {
+		action = options.action;
+	} else {
+		const actionResult = await select({
+			message: 'Choose what to do with this prompt',
+			options: [
+				{ value: 'clipboard-merge', label: 'Merge with clipboard and copy back' },
+				{ value: 'clipboard-prompt', label: 'Prompt for clipboard content' },
+				{ value: 'print', label: 'Print to console' }
+			]
+		});
+
+		if (isCancel(actionResult)) {
+			cancel('Cancelled');
+			process.exit(0);
+		}
+
+		action = actionResult as 'clipboard-merge' | 'clipboard-prompt' | 'print';
+	}
+
+	await executePromptBlocks(category, selectedTemplate, action);
 }

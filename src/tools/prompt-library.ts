@@ -26,6 +26,11 @@ Requirements:
 - If the source provides an example, explain THAT example rather than creating a new one. You may add a small real-life analogy to clarify it, but the core example must come from the source.
 - If the content contains formulas, code, or jargon, explain what they mean in plain English while preserving the original notation and structure.
 - If something is ambiguous, state the most likely meaning and continue
+- Do not generate any additional content beyond the explanation, summary, and check question.
+- Do not use language - like "Your text say this..." or "The content mentioned this..." etc. Just explain the content directly.
+- The explanation should be engaging, thought-provoking, well-structured, and easy to understand without being verbose. 
+- The explanation should be also coherent and easy to follow - for example explain problems in a step-by-step manner and end with final answer with explanation, explain concepts in a way that builds understanding, do not dump information in one go.
+- Use markdown for proper formatting.
 
 After explaining, provide:
 - A short summary
