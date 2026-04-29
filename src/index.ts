@@ -24,7 +24,13 @@ const shortcuts: Record<string, ShortcutCommand> = {
 	'prompt-notes-clipboard': {
 		tool: 'prompt-blocks',
 		category: 'Learning',
-		template: 'Notes Generator',
+		template: 'Beginner-Friendly Notes',
+		action: 'clipboard-merge'
+	},
+	'prompt-youtube-notes-clipboard': {
+		tool: 'prompt-blocks',
+		category: 'Learning',
+		template: 'YouTube Caption Notes',
 		action: 'clipboard-merge'
 	},
 	'prompt-debug-clipboard': {
@@ -44,6 +50,8 @@ const shortcutDescriptions: Record<string, string> = {
 	'prompt-coding': 'Choose from Coding category prompts',
 	'prompt-productivity': 'Choose from Productivity category prompts',
 	'prompt-notes-clipboard': 'Generate clean notes from content + auto-merge clipboard',
+	'prompt-youtube-notes-clipboard':
+		'Generate learning notes from YouTube captions + auto-merge clipboard',
 	'prompt-debug-clipboard': 'Debug code/issues + auto-merge clipboard'
 };
 
@@ -74,6 +82,7 @@ SHORTCUTS (bypass interactive prompts):
   devsr --help                             # Show this help message
   devsr prompt-explain-clipboard       # Explain + merge with clipboard
   devsr prompt-notes-clipboard             # Generate notes + merge with clipboard
+  devsr prompt-youtube-notes-clipboard     # YouTube captions to notes + merge with clipboard
   devsr prompt-learning                    # Choose Learning prompt
 `);
 }

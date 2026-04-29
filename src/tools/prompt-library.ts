@@ -11,33 +11,59 @@ export const promptTemplates: PromptTemplate[] = [
 		category: 'Learning',
 		description:
 			'Explain pasted content in simple language with intuition, examples, and a quick check.',
-		prompt: `Explain the content below in a very simple and beginner-friendly way.
+		prompt: `Explain the content below in a beginner-friendly way.
 
-Treat everything after this instruction block as the content to explain.
+You are given a content, you have to explain it in a beginner-friendly way.
 Do not ask me to reformat it. Work with it as-is, even if it is long, dense, technical, or poorly structured.
 
 Requirements:
-- Use clear, easy-to-understand language
-- Break ideas into small steps
-- Start with intuition first, then add details
-- Explain any technical terms in simple words
-- Use short paragraphs and clean structure
-- CRITICAL: Base your entire explanation on the source content. Reuse its definitions, notations, formulas, and examples. Do not invent new examples or definitions that are not in the source.
-- If the source provides an example, explain THAT example rather than creating a new one. You may add a small real-life analogy to clarify it, but the core example must come from the source.
-- If the content contains formulas, code, or jargon, explain what they mean in plain English while preserving the original notation and structure.
-- If something is ambiguous, state the most likely meaning and continue
-- Do not generate any additional content beyond the explanation, summary, and check question.
-- Do not use language - like "Your text say this..." or "The content mentioned this..." etc. Just explain the content directly.
-- The explanation should be engaging, thought-provoking, well-structured, and easy to understand without being verbose. 
-- The explanation should be also coherent and easy to follow - for example explain problems in a step-by-step manner and end with final answer with explanation, explain concepts in a way that builds understanding, do not dump information in one go.
-- Use markdown for proper formatting.
+- Base the explanation on the source content. Do not invent facts, definitions, examples, formulas, or context that is not present.
+- If something is ambiguous or incomplete, state the most likely interpretation briefly and continue.
+- Start with intuition, then add details in small logical steps.
+- Explain technical terms in simple words when they first appear.
+- Preserve important notation, formulas, code, names, and examples from the source.
+- If the source has examples, explain those examples instead of replacing them. You may add a short analogy only when it clearly helps.
+- Use direct language. Do not say "the text says" or "the content mentions" unless needed for clarity.
 
-After explaining, provide:
-- A short summary
-- One quick check question`
+Context:
+
+`
 	},
 	{
-		name: 'Notes Generator',
+		name: 'YouTube Caption Notes',
+		category: 'Learning',
+		description:
+			'Turn messy YouTube captions into clear learning notes by inferring context and structure.',
+		prompt: `Turn the YouTube captions below into clear, well-structured learning notes.
+
+Treat everything after this instruction block as raw YouTube caption text.
+Do not ask me to reformat it. Work with it as-is, even if it is messy, repetitive, auto-generated, missing punctuation, or split into awkward transcript fragments.
+
+Important context:
+- YouTube captions often do not include mathematical notation, diagrams, slide text, code formatting, or exact technical symbols that may have appeared visually in the video.
+- Infer the likely topic, structure, and missing context from the spoken words, but do not pretend uncertain details are explicitly present.
+- If the speaker refers to something visual, such as "this equation", "the graph", "here", or "this value", explain the most likely meaning and label it as an inference.
+
+Requirements:
+- Start by identifying the likely topic and learning goal of the video
+- Convert the transcript into clean markdown notes with clear headings
+- Preserve any timestamps if they are useful for finding sections in the video
+- Remove filler, repeated phrases, sponsorship-style interruptions, and low-value conversational noise
+- Reconstruct the speaker's ideas into a logical order, even if the captions are out of order or fragmented
+- Explain concepts in beginner-friendly language with intuition first, then details
+- Preserve important terms, definitions, names, steps, and examples from the captions
+- When mathematical, scientific, coding, or technical notation seems missing, write the concept in plain English and optionally include a likely notation only if it is strongly implied
+- If an exact formula, symbol, diagram detail, or code snippet is not present in the captions, state that it is not available from the transcript instead of inventing it
+- If the captions contain examples, explain those examples rather than creating unrelated ones
+- If something is ambiguous, state the most likely interpretation and continue
+- Do not use language like "The captions say..." or "The transcript mentions...". Write the notes directly.
+
+Context:
+
+`
+	},
+	{
+		name: 'Concise Notes Generator',
 		category: 'Learning',
 		description: 'Turn raw content into clean notes with headings, takeaways, and review cues.',
 		prompt: `Turn the content below into clear, well-structured notes.
@@ -46,17 +72,19 @@ Treat everything after this instruction block as source material.
 Your job is to extract and organize the important information without losing the main ideas.
 
 Requirements:
-- Write concise but complete notes
-- Organize the notes with clear headings and bullet points
+- Base the notes on the source material. Do not invent facts, examples, definitions, or context that is not present.
+- If something is ambiguous or incomplete, mark it as unclear instead of guessing with confidence.
+- Write concise but complete notes.
+- Organize the notes with clear headings and bullets.
 - Capture key concepts, definitions, processes, and important details
 - Remove repetition and low-value filler
 - Preserve important terminology, but explain it briefly when needed
 - If the content is unstructured, reorganize it into a logical format
-- If the content contains examples, keep only the most useful ones
+- If the content contains examples, keep only the most useful ones and preserve their meaning
 
-After the notes, provide:
-- A short "Key Takeaways" section
-- A short list of things worth memorizing or reviewing`
+Context:
+
+`
 	},
 	{
 		name: 'Step-by-Step Problem Solving',
@@ -70,16 +98,23 @@ Work from the given content directly and do not require extra formatting.
 
 Requirements:
 - Identify what the problem is asking
+- List the given information and any assumptions separately
 - Break the solution into clear step-by-step reasoning
 - Show the logic in an easy-to-follow order
 - If there are multiple ways to solve it, use the clearest one first
-- Point out important assumptions
+- Preserve the original notation, units, constraints, and definitions from the source
 - If calculations are involved, show the main steps clearly
 - If the content is incomplete or ambiguous, state your best interpretation and proceed
+- Do not invent missing values, formulas, or constraints. If something is required but missing, say so.
+- Verify that the final answer directly answers the original question
 
-After solving, provide:
-- The final answer clearly labeled
-- A short explanation of why this approach works
+Output structure:
+- What is being asked
+- Given information
+- Assumptions or ambiguities
+- Step-by-step solution
+- Final answer
+- Why this approach works
 - One common mistake to avoid`
 	},
 	{
@@ -94,18 +129,24 @@ Identify the main things being compared, even if the content is messy or indirec
 
 Requirements:
 - Clearly identify each concept or item
+- Base the comparison on the provided content. Do not invent differences, features, or use cases that are not supported.
+- If you infer something, label it as an inference.
 - Explain similarities and differences in simple language
 - Focus on meaning, purpose, use cases, strengths, and limitations
-- If helpful, present the comparison in a table
+- Use a table when comparing two or more concepts and it improves clarity
 - Highlight when two things seem similar but are actually different
 - If the content is biased or incomplete, mention that briefly and still provide the most useful comparison
 
-After the comparison, provide:
-- A short "When to use which" section
-- A one-paragraph summary`
+Output structure:
+- Concepts being compared
+- Comparison table, if useful
+- Key similarities
+- Key differences
+- When to use which
+- One-paragraph summary`
 	},
 	{
-		name: 'Notes Generator',
+		name: 'Beginner-Friendly Notes',
 		category: 'Learning',
 		description:
 			'Turn raw content into clean, beginner-friendly markdown notes with intuition, source-based examples, and review cues.',
@@ -115,6 +156,8 @@ Treat everything after this instruction block as source material.
 Your job is to extract, explain, and organize the important information without losing the main ideas.
 
 Requirements:
+- Base the notes on the source content. Do not invent facts, definitions, examples, formulas, or context that is not present.
+- If something is ambiguous or incomplete, state the most likely interpretation briefly and label it as an assumption.
 - Write concise but complete notes in simple, easy-to-understand language
 - Break ideas into small, logical steps
 - Start with intuition first, then add details
@@ -125,16 +168,15 @@ Requirements:
 - Preserve important terminology, but explain it briefly when needed
 - If the content is unstructured, reorganize it into a logical format
 - If the content contains examples, keep only the most useful ones and explain THEM rather than inventing new ones
-- CRITICAL: Base your entire explanation on the source content. Reuse its definitions, notations, formulas, and examples. Do not invent new examples or definitions that are not in the source.
-- If the source provides an example, explain THAT example. You may add a small real-life analogy to clarify it, but the core example must come from the source.
 - If the content contains formulas, code, or jargon, explain what they mean in plain English while preserving the original notation and structure.
-- If something is ambiguous, state the most likely meaning and continue
 - Use short paragraphs and clean markdown structure
 
-After the notes, provide:
-- A short "Key Takeaways" section
-- A short list of things worth memorizing or reviewing
-- One quick check question to test understanding`
+Output structure:
+- Intuition
+- Beginner-friendly notes
+- Key takeaways
+- Things worth memorizing or reviewing
+- One quick check question`
 	},
 	{
 		name: 'Code Generation',
@@ -146,6 +188,7 @@ Treat everything after this instruction block as the requirements, constraints, 
 Use that content as the source of truth and fill in missing details sensibly.
 
 Requirements:
+- Use the provided content as the source of truth. Do not invent requirements, APIs, files, or constraints that are not stated or strongly implied.
 - Write correct, clean, and readable code
 - Prefer clarity over cleverness
 - Follow best practices for structure, naming, and error handling
@@ -154,11 +197,16 @@ Requirements:
 - Include comments only where they truly help understanding
 - Make the output practical and ready to use
 - If there are edge cases suggested by the content, handle them
+- Include a minimal runnable example or usage snippet when it helps
+- Include tests or test cases when the source asks for reliability, edge cases, or behavior verification
+- Mention security, validation, or performance concerns when relevant
 
-After the code, provide:
-- A short explanation of how it works
-- Any assumptions you made
-- A short usage example if useful`
+Output structure:
+- Assumptions
+- Code
+- How it works
+- Usage example, if useful
+- Tests or verification steps, if useful`
 	},
 	{
 		name: 'Debugging Assistant',
@@ -171,18 +219,22 @@ Use the provided material to identify the most likely cause and propose fixes.
 
 Requirements:
 - Start by summarizing the problem in plain language
-- Identify the most likely root causes in order of probability
+- Identify the most likely root causes in order of probability or confidence
 - Use evidence from the provided content
 - If multiple issues may be contributing, separate them clearly
-- Suggest specific fixes, not generic advice
+- Suggest a minimal fix first, then a more robust fix if needed
 - If code changes are needed, show corrected code or targeted edits
 - Mention any assumptions if the context is incomplete
-- Avoid guessing wildly; prioritize the strongest explanations first
+- Do not invent files, logs, dependencies, or behavior that is not present. Label uncertain guesses clearly.
+- Include reproduction or verification steps when possible
 
-After the debugging analysis, provide:
-- The most likely root cause
-- The recommended fix
-- A short checklist to verify the issue is resolved`
+Output structure:
+- Problem summary
+- Evidence from the content
+- Likely root causes
+- Recommended fix
+- Corrected code or targeted edits, if needed
+- Verification checklist`
 	},
 	{
 		name: 'System Design Explanation',
@@ -199,14 +251,21 @@ Requirements:
 - Identify the main components and what each one does
 - Explain how data and requests move through the system
 - Clarify important tradeoffs, constraints, and design decisions
+- Identify APIs, data models, storage, queues, or external services when they are present
 - Mention scalability, reliability, performance, and security considerations if they are relevant
 - If the design is incomplete, infer the likely structure carefully and label assumptions
+- Do not invent components, requirements, scale numbers, or guarantees that are not stated or strongly implied
+- Highlight likely failure modes and bottlenecks
 - Use simple language, but keep technical accuracy
 
-After explaining, provide:
-- A concise architecture summary
-- The main strengths of the design
-- The main risks or bottlenecks`
+Output structure:
+- System purpose
+- Main components
+- Data/request flow
+- Key tradeoffs and assumptions
+- Scalability, reliability, performance, and security notes
+- Strengths
+- Risks, bottlenecks, and failure modes`
 	},
 	{
 		name: 'Summarization',
@@ -221,14 +280,19 @@ Requirements:
 - Capture the main ideas accurately
 - Remove repetition, filler, and side details unless they matter
 - Preserve important facts, conclusions, and decisions
+- Preserve exact numbers, dates, names, deadlines, constraints, and quoted terms when they matter
 - Use simple, direct language
 - If the content includes multiple topics, separate them clearly
 - If useful, organize the summary into short sections or bullets
 - Do not distort the meaning for the sake of brevity
+- Do not add outside context or unsupported conclusions
+- If something important is unclear, mention it briefly
 
-After the summary, provide:
-- A short "Key Points" list
-- A one-sentence takeaway`
+Output structure:
+- Summary
+- Key points
+- Important details to preserve
+- One-sentence takeaway`
 	},
 	{
 		name: 'Actionable Notes and Next Steps',
@@ -244,14 +308,18 @@ Requirements:
 - Identify key decisions, important points, and unresolved questions
 - Extract action items clearly
 - Make each action item specific and easy to understand
+- Include owner, deadline, status, and priority when they are present or clearly implied
 - Group related information logically
 - Remove repetition and low-value detail
 - If responsibilities or deadlines are implied, note them carefully
 - If something is unclear, mark it as an open question instead of inventing certainty
+- Do not invent commitments, owners, dates, or decisions
 
-After organizing the notes, provide:
-- A clear action items section
-- An open questions section
-- A short summary of the overall situation`
+Output structure:
+- Situation summary
+- Key decisions
+- Action items
+- Open questions
+- Important context or risks`
 	}
 ];
