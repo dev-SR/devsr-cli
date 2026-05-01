@@ -33,6 +33,12 @@ const shortcuts: Record<string, ShortcutCommand> = {
 		template: 'YouTube Caption Notes',
 		action: 'clipboard-merge'
 	},
+	'prompt-project-context-clipboard': {
+		tool: 'prompt-blocks',
+		category: 'Coding',
+		template: 'Project Context Extractor',
+		action: 'clipboard-merge'
+	},
 	'prompt-debug-clipboard': {
 		tool: 'prompt-blocks',
 		category: 'all',
@@ -52,6 +58,8 @@ const shortcutDescriptions: Record<string, string> = {
 	'prompt-notes-clipboard': 'Generate clean notes from content + auto-merge clipboard',
 	'prompt-youtube-notes-clipboard':
 		'Generate learning notes from YouTube captions + auto-merge clipboard',
+	'prompt-project-context-clipboard':
+		'Extract reusable project context from codebase snippets + auto-merge clipboard',
 	'prompt-debug-clipboard': 'Debug code/issues + auto-merge clipboard'
 };
 
@@ -83,6 +91,7 @@ SHORTCUTS (bypass interactive prompts):
   devsr prompt-explain-clipboard       # Explain + merge with clipboard
   devsr prompt-notes-clipboard             # Generate notes + merge with clipboard
   devsr prompt-youtube-notes-clipboard     # YouTube captions to notes + merge with clipboard
+  devsr prompt-project-context-clipboard   # Project context extraction + merge with clipboard
   devsr prompt-learning                    # Choose Learning prompt
 `);
 }

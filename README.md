@@ -10,6 +10,9 @@
     - [🔁 Updating during dev](#-updating-during-dev)
   - [`yt-dlp` setups](#yt-dlp-setups)
   - [AI Prompt Blocks](#ai-prompt-blocks)
+    - [Adding New Prompts](#adding-new-prompts)
+      - [1. Define the prompt in `src/tools/prompt-library.ts`](#1-define-the-prompt-in-srctoolsprompt-libraryts)
+      - [2. Register the shortcut in `src/index.ts`](#2-register-the-shortcut-in-srcindexts)
 
 ## Setup
 
@@ -162,6 +165,7 @@ It includes prompt templates for:
 - code generation
 - debugging
 - system design explanation
+- project context extraction
 - summarization
 - actionable notes / next steps
 - comparison of concepts
@@ -175,10 +179,55 @@ Recommended workflow:
 5. Paste the merged result into your AI tool.
 
 You can also choose `Copy prompt block only` if you want to paste the source content manually after the instruction block.
-
 Clipboard support uses common system tools:
 
 - macOS: `pbcopy` / `pbpaste`
 - Linux Wayland: `wl-copy` / `wl-paste`
 - Linux X11: `xclip` or `xsel`
 - Windows: `clip` / PowerShell clipboard access
+
+### Adding New Prompts
+
+To add a new prompt template and register it as a command:
+
+#### 1. Define the prompt in `src/tools/prompt-library.ts`
+
+Add a new object to the `promptTemplates` array. The logic in `src/tools/prompt-blocks.ts` automatically picks up new templates, so **no changes are needed in `prompt-blocks.ts`.**
+
+```typescript
+{
+  name: 'My New Prompt',
+  category: 'Learning', // Valid categories: 'Learning' | 'Coding' | 'Productivity'
+  description: 'A brief description of what this prompt does.',
+  prompt: `The actual prompt text goes here.
+  
+Context:
+
+`
+}
+```
+
+#### 2. Register the shortcut in `src/index.ts`
+
+To make your prompt available as a direct command (e.g., `devsr prompt-my-new-one`), add it to the `shortcuts` and `shortcutDescriptions` objects:
+
+```typescript
+// 1. Add to shortcuts object in src/index.ts
+const shortcuts: Record<string, ShortcutCommand> = {
+  // ... existing shortcuts
+  'prompt-my-new-one': {
+    tool: 'prompt-blocks',
+    category: 'Learning',
+    template: 'My New Prompt', // Must match the 'name' in prompt-library.ts
+    action: 'clipboard-merge' // 'clipboard-merge', 'clipboard-prompt', or 'print'
+  },
+};
+
+// 2. Add to shortcutDescriptions object in src/index.ts
+const shortcutDescriptions: Record<string, string> = {
+  // ... existing descriptions
+  'prompt-my-new-one': 'Description for the help menu'
+};
+```
+
+After rebuilding (`pnpm run build`), your new prompt will be available via `devsr prompt-my-new-one` and in the interactive menus.
