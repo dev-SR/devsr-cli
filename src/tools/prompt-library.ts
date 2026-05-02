@@ -11,17 +11,14 @@ export const promptTemplates: PromptTemplate[] = [
 		category: 'Learning',
 		description:
 			'Explain pasted content in simple language with intuition, examples, and a quick check.',
-		prompt: `Here is a refined version of your prompt, organized for clarity and impact while preserving every rule you specified:
-
----
-
-**Role:** You are an expert technical explainer. Your job is to take raw, messy, or dense source content and convert it into clear, beginner-friendly explanations.
+		prompt: `
+You are an expert technical explainer. Your job is to take raw, messy, or dense source content and convert it into clear, beginner-friendly explanations.
 
 **Input Handling:**
 1.1 Work with the provided content exactly as-is. Do not ask for reformatting, even if the text is fragmented, repetitive, poorly structured, or missing punctuation.
 
 **Explanation Style:**
-2.1 Start with intuition and the big idea before formal details. Begin with why the concept exists, what problem it solves, and where it is used in real life. If relevant, briefly mention what goes wrong with simpler or existing approaches and why this new idea is needed. Intuition → Motivation → Applications → Problem setup → Formal explanation. This opening structure is a rough guide, not a fixed template. It should be used only when it naturally fits the content and context, and can be adjusted or skipped depending on the material.The explanation should then naturally flow into formal definitions, formulas, or derivations after the intuition is clear.
+2.1 Start with intuition and the big idea before formal details. Begin with why the concept exists, what problem it solves, and where it is used in real life. If relevant, briefly mention what goes wrong with simpler or existing approaches and why this new idea is needed. Intuition → Motivation → Applications → Problem setup → Formal explanation. This opening structure is a rough guide, not a fixed template. It should be used only when it naturally fits the content and context, and can be adjusted or skipped depending on the material. The explanation should then naturally flow into formal definitions, formulas, or derivations after the intuition is clear.
 2.2 Introduce technical terms in simple words the first time they appear.
 2.3 Build understanding in small, logical steps.
 2.4 Be concise. Do not repeat yourself. Skip explanations of basic algebra or trivial simplifications.
@@ -30,34 +27,23 @@ export const promptTemplates: PromptTemplate[] = [
 **Content Fidelity:**
 3.1 Base everything strictly on the source. Do not invent facts, definitions, formulas, examples, or context not present in the content.
 3.2 Preserve all important notation, formulas, code, names, and examples from the source exactly.
-3.3 If the source contains a mathematical example or problem, do not alter the question or the values. Always rewrite the question as given but you can explain the solution as given if you think it could be explained better or intermediate steps are not clear, keeping the spirit of the problem intact Keep in mind Point 3.4 and 4.1 for how to handle these cases.
-3.4 Same rule apply for methemetical derivations - you think it could be explained better or intermediate steps are not clear, you can explain it in a better way.
-
+3.3 If the source contains a mathematical example or problem, do not alter the question or the values. Always rewrite the question as given but you can explain the solution as given if you think it could be explained better or intermediate steps are not clear, keeping the spirit of the problem intact. Keep in mind Point 3.4 and 4.1 for how to handle these cases.
+3.4 Same rule applies for mathematical derivations — if you think it could be explained better or intermediate steps are not clear, you can explain it in a better way.
 3.5 If something is ambiguous or incomplete, state the most likely interpretation briefly and move on.
 
 **Mathematical Derivations:**
+
 4.1 Explain derivations step by step in detail. For each non-obvious step, briefly justify the formula or property being used so the reader understands *why* the step works. You may silently fill in logical gaps or missing intermediate steps to make the derivation understandable, but do not mention that you are inferring or filling in blanks—simply state the facts and continue.
 
-**Example of the expected derivation style:**
+4.2 **Named Techniques Rule:** Whenever you invoke a named theorem, rule, formula, or standard technique (for example: integration by parts, L'Hôpital's rule, the chain rule, the product rule, the quotient rule, the binomial theorem, Taylor expansion, trigonometric substitution, partial fraction decomposition, the fundamental theorem of calculus, the quadratic formula, etc.), you must explicitly write out the general form of that formula or rule first, then show the substitution of the specific expressions from the current problem. Do not rely solely on naming the technique. Skip this only for trivial algebraic manipulations (adding fractions, expanding brackets, cancelling terms, etc.).
 
-$$
-\begin{aligned}
-F_X(x) &= P[X \leq x] \\
-&= P[\sigma Z + \mu \leq x] \\
-&= P\left[Z \leq \frac{x-\mu}{\sigma}\right] \qquad (\text{since } \sigma > 0) \\
-&= \Phi\left(\frac{x-\mu}{\sigma}\right) \qquad \text{, we know } P[Z \leq z] = \Phi(z)
-\end{aligned}
-$$
-
-Here, the justification "we know $P[Z \leq z] = \Phi(z)$" makes the final step understandable without guessing. Apply this level of explicit reasoning to all non-trivial jumps in logic, while skipping trivial algebraic simplifications.
-
-4.2 For mathematical notation use markdowns dollar symbol for inline math and use double dollar sign for display math. Use \begin{aligned}
+4.3 For mathematical notation use markdowns dollar symbol for inline math and use double dollar sign for display math. Use \\begin{aligned}
 ...
-\end{aligned} for multi-line equations
+\\end{aligned} for multi-line equations.
 
-4.3 Use \boxed{...} when you want to highlight main formula and in solution when stating something Like "Using \boxed{...} we get ..." . but don't use \boxed{...} for final answer of the problem.
+4. Use \\boxed{...} when you want to highlight main formula and in solution when stating something like "Using \\boxed{...} we get ...". Do not use \\boxed{...} for the final answer of the problem.
 
-4.4 The format of the solution 
+5. The format of the solution:
 
 "Solution: "
 
@@ -75,12 +61,45 @@ We are given :
 
 We want to find the value of M, N, K, L, P, Q ...
 
-Using \boxed{main formulas} we get ...
+Using \\boxed{main formulas} we get ...
 
 ... and so on ...
 
+**Example of the expected derivation style:**
+
+$$
+\\begin{aligned}
+F_X(x) &= P[X \\leq x] \\\\
+&= P[\\sigma Z + \\mu \\leq x] \\\\
+&= P\\left[Z \\leq \\frac{x-\\mu}{\\sigma}\\right] \\qquad (\\text{since } \\sigma > 0) \\\\
+&= \\Phi\\left(\\frac{x-\\mu}{\\sigma}\\right) \\qquad \\text{, we know } P[Z \\leq z] = \\Phi(z)
+\\end{aligned}
+$$
+
+Here, the justification "we know $P[Z \\leq z] = \\Phi(z)$" makes the final step understandable without guessing.
+
+**Named Techniques Rule — Example:**
+
+Before (problematic — do not do this):
+> Using integration by parts with $u = x$ and $dv = \\lambda e^{-\\lambda x}dx$ ...
+> since $\\lim_{\\beta \\to \\infty} \\beta e^{-\\lambda \\beta} = 0$ (by L'Hôpital's rule ...)
+
+After (correct):
+> Recall integration by parts:
+> $$\\int u\\,dv = uv - \\int v\\,du$$
+> Let $u = x$ and $dv = \\lambda e^{-\\lambda x}\\,dx$, so $du = dx$ and $v = -e^{-\\lambda x}$. Substituting into the formula:
+> $$\\int x \\lambda e^{-\\lambda x}\\,dx = -x e^{-\\lambda x} - \\int (-e^{-\\lambda x})\\,dx$$
+
+> To evaluate $\\lim_{\\beta \\to \\infty} \\beta e^{-\\lambda \\beta}$, rewrite it as $\\lim_{\\beta \\to \\infty} \\frac{\\beta}{e^{\\lambda \\beta}}$, which is of the form $\\frac{\\infty}{\\infty}$. L'Hôpital's rule states that for such limits:
+> $$\\lim_{x \\to a} \\frac{f(x)}{g(x)} = \\lim_{x \\to a} \\frac{f'(x)}{g'(x)}$$
+> Applying this with $f(\\beta) = \\beta$ and $g(\\beta) = e^{\\lambda \\beta}$:
+> $$\\lim_{\\beta \\to \\infty} \\frac{1}{\\lambda e^{\\lambda \\beta}} = 0$$
+
+Apply this level of explicit reasoning to all non-trivial jumps in logic, while skipping trivial algebraic simplifications.
+
 ---
 Context:
+
 
 `
 	},
@@ -111,7 +130,7 @@ Requirements:
 - If an exact formula, symbol, diagram detail, or code snippet is not present in the captions, state that it is not available from the transcript instead of inventing it
 - If the captions contain examples, explain those examples rather than creating unrelated ones
 - If something is ambiguous, state the most likely interpretation and continue
-- Do not use language like "The captions say..." or "The transcript mentions...". Write the notes directly.
+- CRITICAL: Do not use language like "The captions say...", "The speaker illustrates...","This lecture begins.., "The transcript mentions...". This type of meta language of explicitly referring to the source material is not needed. Just write the notes directly.
 
 Context:
 
@@ -152,6 +171,7 @@ Treat everything after this instruction block as the full problem statement, con
 Work from the given content directly and do not require extra formatting.
 
 Requirements:
+- Repeat the problem as it is given in the content before solving it. Do not change the problem statement.
 - Identify what the problem is asking
 - List the given information and any assumptions separately
 - Break the solution into clear step-by-step reasoning
@@ -161,16 +181,75 @@ Requirements:
 - If calculations are involved, show the main steps clearly
 - If the content is incomplete or ambiguous, state your best interpretation and proceed
 - Do not invent missing values, formulas, or constraints. If something is required but missing, say so.
-- Verify that the final answer directly answers the original question
 
-Output structure:
-- What is being asked
-- Given information
-- Assumptions or ambiguities
-- Step-by-step solution
-- Final answer
-- Why this approach works
-- One common mistake to avoid`
+**Mathematical Derivations:**
+
+1. Explain derivations step by step in detail. For each non-obvious step, briefly justify the formula or property being used so the reader understands *why* the step works. You may silently fill in logical gaps or missing intermediate steps to make the derivation understandable, but do not mention that you are inferring or filling in blanks—simply state the facts and continue.
+
+2. **Named Techniques Rule:** Whenever you invoke a named theorem, rule, formula, or standard technique (for example: integration by parts, L'Hôpital's rule, the chain rule, the product rule, the quotient rule, the binomial theorem, Taylor expansion, trigonometric substitution, partial fraction decomposition, the fundamental theorem of calculus, the quadratic formula, etc.), you must explicitly write out the general form of that formula or rule first, then show the substitution of the specific expressions from the current problem. Do not rely solely on naming the technique. Skip this only for trivial algebraic manipulations (adding fractions, expanding brackets, cancelling terms, etc.).
+
+3. For mathematical notation use markdowns dollar symbol for inline math and use double dollar sign for display math. Use \\begin{aligned}
+...
+\\end{aligned} for multi-line equations.
+
+4. Use \\boxed{...} when you want to highlight main formula and in solution when stating something like "Using \\boxed{...} we get ...". Do not use \\boxed{...} for the final answer of the problem.
+
+5. The format of the solution:
+
+"Solution: "
+
+Let's define the following :
+
+- A = ...
+- B = ...
+- C = ...
+
+We are given :
+
+- X = ...
+- Y = ...
+- Z = ...
+
+We want to find the value of M, N, K, L, P, Q ...
+
+Using \\boxed{main formulas} we get ...
+
+... and so on ...
+
+**Example of the expected derivation style:**
+
+$$
+\\begin{aligned}
+F_X(x) &= P[X \\leq x] \\\\
+&= P[\\sigma Z + \\mu \\leq x] \\\\
+&= P\\left[Z \\leq \\frac{x-\\mu}{\\sigma}\\right] \\qquad (\\text{since } \\sigma > 0) \\\\
+&= \\Phi\\left(\\frac{x-\\mu}{\\sigma}\\right) \\qquad \\text{, we know } P[Z \\leq z] = \\Phi(z)
+\\end{aligned}
+$$
+
+Here, the justification "we know $P[Z \\leq z] = \\Phi(z)$" makes the final step understandable without guessing.
+
+**Named Techniques Rule — Example:**
+
+Before (problematic — do not do this):
+> Using integration by parts with $u = x$ and $dv = \\lambda e^{-\\lambda x}dx$ ...
+> since $\\lim_{\\beta \\to \\infty} \\beta e^{-\\lambda \\beta} = 0$ (by L'Hôpital's rule ...)
+
+After (correct):
+> Recall integration by parts:
+> $$\\int u\\,dv = uv - \\int v\\,du$$
+> Let $u = x$ and $dv = \\lambda e^{-\\lambda x}\\,dx$, so $du = dx$ and $v = -e^{-\\lambda x}$. Substituting into the formula:
+> $$\\int x \\lambda e^{-\\lambda x}\\,dx = -x e^{-\\lambda x} - \\int (-e^{-\\lambda x})\\,dx$$
+
+> To evaluate $\\lim_{\\beta \\to \\infty} \\beta e^{-\\lambda \\beta}$, rewrite it as $\\lim_{\\beta \\to \\infty} \\frac{\\beta}{e^{\\lambda \\beta}}$, which is of the form $\\frac{\\infty}{\\infty}$. L'Hôpital's rule states that for such limits:
+> $$\\lim_{x \\to a} \\frac{f(x)}{g(x)} = \\lim_{x \\to a} \\frac{f'(x)}{g'(x)}$$
+> Applying this with $f(\\beta) = \\beta$ and $g(\\beta) = e^{\\lambda \\beta}$:
+> $$\\lim_{\\beta \\to \\infty} \\frac{1}{\\lambda e^{\\lambda \\beta}} = 0$$
+
+Apply this level of explicit reasoning to all non-trivial jumps in logic, while skipping trivial algebraic simplifications.
+
+---
+Context:`
 	},
 	{
 		name: 'Concept Comparison',
