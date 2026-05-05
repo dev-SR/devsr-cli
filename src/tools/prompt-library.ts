@@ -67,6 +67,7 @@ Using \\boxed{main formulas} we get ...
 
 **Example of the expected derivation style:**
 
+Ex1:
 $$
 \\begin{aligned}
 F_X(x) &= P[X \\leq x] \\\\
@@ -77,6 +78,32 @@ F_X(x) &= P[X \\leq x] \\\\
 $$
 
 Here, the justification "we know $P[Z \\leq z] = \\Phi(z)$" makes the final step understandable without guessing.
+
+
+Ex2:
+
+$$
+\begin{aligned}
+\ln f &= n\ln\lambda - n\lambda\bar{X}\\
+\frac{\partial \ln f}{\partial \lambda} &= \frac{n}{\lambda}  - n\bar{X} \quad \because [\ln x]' = \frac{1}{x}, [c x]' = c
+\end{aligned}
+$$
+
+Here, we're reminded of the basic differentiation formulas using the "$\\because$" symbol.
+
+Ex3:
+
+$$
+\begin{aligned}
+I_n &= \mathbb{E}\left[\left(\frac{n}{\lambda} - n\bar{X}\right)^2\right] \\[6pt]
+&= \mathbb{E}\left[\frac{n^2}{\lambda^2} - \frac{2n^2}{\lambda}\bar{X} + n^2\bar{X}^2\right] \quad \because (a-b)^2 = a^2+b^2-2ab \\[6pt]
+&= \frac{n^2}{\lambda^2} - \frac{2n^2}{\lambda}\mathbb{E}[\bar{X}] + n^2\mathbb{E}[\bar{X}^2] \quad \because E[c X] = c E[X]\\[6pt]
+\end{aligned}
+$$
+
+Again, here we're reminded using the "$\because$" symbol.
+
+So, in short, you should use \quad, \because, etc to make the derivation more understandable and easy to follow.
 
 **Named Techniques Rule — Example:**
 
@@ -100,63 +127,6 @@ Apply this level of explicit reasoning to all non-trivial jumps in logic, while 
 ---
 Context:
 
-
-`
-	},
-	{
-		name: 'YouTube Caption Notes',
-		category: 'Learning',
-		description:
-			'Turn messy YouTube captions into clear learning notes by inferring context and structure.',
-		prompt: `Turn the YouTube captions below into clear, well-structured learning notes.
-
-Treat everything after this instruction block as raw YouTube caption text.
-Do not ask me to reformat it. Work with it as-is, even if it is messy, repetitive, auto-generated, missing punctuation, or split into awkward transcript fragments.
-
-Important context:
-- YouTube captions often do not include mathematical notation, diagrams, slide text, code formatting, or exact technical symbols that may have appeared visually in the video.
-- Infer the likely topic, structure, and missing context from the spoken words, but do not pretend uncertain details are explicitly present.
-- If the speaker refers to something visual, such as "this equation", "the graph", "here", or "this value", explain the most likely meaning and label it as an inference.
-
-Requirements:
-- Start by identifying the likely topic and learning goal of the video
-- Convert the transcript into clean markdown notes with clear headings
-- Preserve any timestamps if they are useful for finding sections in the video
-- Remove filler, repeated phrases, sponsorship-style interruptions, and low-value conversational noise
-- Reconstruct the speaker's ideas into a logical order, even if the captions are out of order or fragmented
-- Explain concepts in beginner-friendly language with intuition first, then details
-- Preserve important terms, definitions, names, steps, and examples from the captions
-- When mathematical, scientific, coding, or technical notation seems missing, write the concept in plain English and optionally include a likely notation only if it is strongly implied
-- If an exact formula, symbol, diagram detail, or code snippet is not present in the captions, state that it is not available from the transcript instead of inventing it
-- If the captions contain examples, explain those examples rather than creating unrelated ones
-- If something is ambiguous, state the most likely interpretation and continue
-- CRITICAL: Do not use language like "The captions say...", "The speaker illustrates...","This lecture begins.., "The transcript mentions...". This type of meta language of explicitly referring to the source material is not needed. Just write the notes directly.
-
-Context:
-
-`
-	},
-	{
-		name: 'Concise Notes Generator',
-		category: 'Learning',
-		description: 'Turn raw content into clean notes with headings, takeaways, and review cues.',
-		prompt: `Turn the content below into clear, well-structured notes.
-
-Treat everything after this instruction block as source material.
-Your job is to extract and organize the important information without losing the main ideas.
-
-Requirements:
-- Base the notes on the source material. Do not invent facts, examples, definitions, or context that is not present.
-- If something is ambiguous or incomplete, mark it as unclear instead of guessing with confidence.
-- Write concise but complete notes.
-- Organize the notes with clear headings and bullets.
-- Capture key concepts, definitions, processes, and important details
-- Remove repetition and low-value filler
-- Preserve important terminology, but explain it briefly when needed
-- If the content is unstructured, reorganize it into a logical format
-- If the content contains examples, keep only the most useful ones and preserve their meaning
-
-Context:
 
 `
 	},
@@ -218,6 +188,8 @@ Using \\boxed{main formulas} we get ...
 
 **Example of the expected derivation style:**
 
+
+Ex1:
 $$
 \\begin{aligned}
 F_X(x) &= P[X \\leq x] \\\\
@@ -228,6 +200,32 @@ F_X(x) &= P[X \\leq x] \\\\
 $$
 
 Here, the justification "we know $P[Z \\leq z] = \\Phi(z)$" makes the final step understandable without guessing.
+
+
+Ex2:
+
+$$
+\begin{aligned}
+\ln f &= n\ln\lambda - n\lambda\bar{X}\\
+\frac{\partial \ln f}{\partial \lambda} &= \frac{n}{\lambda}  - n\bar{X} \quad \because [\ln x]' = \frac{1}{x}, [c x]' = c
+\end{aligned}
+$$
+
+Here, we're reminded of the basic differentiation formulas using the "$\\because$" symbol.
+
+Ex3:
+
+$$
+\begin{aligned}
+I_n &= \mathbb{E}\left[\left(\frac{n}{\lambda} - n\bar{X}\right)^2\right] \\[6pt]
+&= \mathbb{E}\left[\frac{n^2}{\lambda^2} - \frac{2n^2}{\lambda}\bar{X} + n^2\bar{X}^2\right] \quad \because (a-b)^2 = a^2+b^2-2ab \\[6pt]
+&= \frac{n^2}{\lambda^2} - \frac{2n^2}{\lambda}\mathbb{E}[\bar{X}] + n^2\mathbb{E}[\bar{X}^2] \quad \because E[c X] = c E[X]\\[6pt]
+\end{aligned}
+$$
+
+Again, here we're reminded using the "$\because$" symbol.
+
+So, in short, you should use \quad, \because, etc to make the derivation more understandable and easy to follow.
 
 **Named Techniques Rule — Example:**
 
@@ -250,6 +248,64 @@ Apply this level of explicit reasoning to all non-trivial jumps in logic, while 
 
 ---
 Context:`
+	},
+	{
+		name: 'YouTube Caption Notes',
+		category: 'Learning',
+		description:
+			'Turn messy YouTube captions into clear learning notes by inferring context and structure.',
+		prompt: `Turn the YouTube captions below into clear, well-structured learning notes.
+
+Treat everything after this instruction block as raw YouTube caption text.
+Do not ask me to reformat it. Work with it as-is, even if it is messy, repetitive, auto-generated, missing punctuation, or split into awkward transcript fragments.
+
+Important context:
+- YouTube captions often do not include mathematical notation, diagrams, slide text, code formatting, or exact technical symbols that may have appeared visually in the video.
+- Infer the likely topic, structure, and missing context from the spoken words, but do not pretend uncertain details are explicitly present.
+- If the speaker refers to something visual, such as "this equation", "the graph", "here", or "this value", explain the most likely meaning and label it as an inference.
+
+Requirements:
+- Start by identifying the likely topic and learning goal of the video
+- Convert the transcript into clean markdown notes with clear headings
+- Preserve any timestamps if they are useful for finding sections in the video
+- Remove filler, repeated phrases, sponsorship-style interruptions, and low-value conversational noise
+- Reconstruct the speaker's ideas into a logical order, even if the captions are out of order or fragmented
+- Explain concepts in beginner-friendly language with intuition first, then details
+- Preserve important terms, definitions, names, steps, and examples from the captions
+- When mathematical, scientific, coding, or technical notation seems missing, write the concept in plain English and optionally include a likely notation only if it is strongly implied
+- If an exact formula, symbol, diagram detail, or code snippet is not present in the captions, state that it is not available from the transcript instead of inventing it
+- If the captions contain examples, explain those examples rather than creating unrelated ones
+- If something is ambiguous, state the most likely interpretation and continue
+- CRITICAL: Do not use language like "The captions say...", "The speaker illustrates...","This lecture begins.., "The transcript mentions...". This type of meta language of explicitly referring to the source material is not needed. Just write the notes directly.
+
+Context:
+
+`
+	},
+
+	{
+		name: 'Concise Notes Generator',
+		category: 'Learning',
+		description: 'Turn raw content into clean notes with headings, takeaways, and review cues.',
+		prompt: `Turn the content below into clear, well-structured notes.
+
+Treat everything after this instruction block as source material.
+Your job is to extract and organize the important information without losing the main ideas.
+
+Requirements:
+- Base the notes on the source material. Do not invent facts, examples, definitions, or context that is not present.
+- If something is ambiguous or incomplete, mark it as unclear instead of guessing with confidence.
+- Write concise but complete notes.
+- Organize the notes with clear headings and bullets.
+- Capture key concepts, definitions, processes, and important details
+- Remove repetition and low-value filler
+- Preserve important terminology, but explain it briefly when needed
+- If the content is unstructured, reorganize it into a logical format
+- If the content contains examples, keep only the most useful ones and preserve their meaning
+
+Context:
+
+`
 	},
 	{
 		name: 'Concept Comparison',
