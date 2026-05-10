@@ -24,19 +24,26 @@ export default async function mdConverter() {
 		process.exit(1);
 	}
 
-	// Multi-select files
+	const SELECT_ALL = '__select_all__';
+
+	// Multi-select files (choose "── Select All ──" to pick every file)
 	const selectedFiles = await multiselect({
-		message: 'Select Markdown files to convert',
-		options: files.map((f) => ({
-			value: f,
-			label: f
-		}))
+		message: 'Select Markdown files to convert  [space] toggle · [a] select all',
+		options: [
+			{ value: SELECT_ALL, label: '── Select All ──' },
+			...files.map((f) => ({ value: f, label: f }))
+		]
 	});
 
 	if (isCancel(selectedFiles) || (selectedFiles as string[]).length === 0) {
 		cancel('No files selected. Exiting...');
 		process.exit(0);
 	}
+
+	// Expand "select all" sentinel to the full file list
+	const resolvedFiles: string[] = (selectedFiles as string[]).includes(SELECT_ALL)
+		? files
+		: (selectedFiles as string[]);
 
 	// Output format selection
 	const format = await select({
@@ -64,7 +71,7 @@ export default async function mdConverter() {
 	}
 
 	// Conversion loop
-	for (const file of selectedFiles as string[]) {
+	for (const file of resolvedFiles) {
 		const outputFile = file.replace(/\.md$/, `.${format}`);
 
 		console.log(`\n▶ Converting: ${file} -> ${outputFile}`);
@@ -85,7 +92,10 @@ export default async function mdConverter() {
 				execSync(cmd, { stdio: 'inherit' });
 			}
 		} catch (err) {
-			console.error(`❌ Failed to convert ${file}:`, err instanceof Error ? err.message : String(err));
+			console.error(
+				`❌ Failed to convert ${file}:`,
+				err instanceof Error ? err.message : String(err)
+			);
 		}
 	}
 
