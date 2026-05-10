@@ -30,6 +30,7 @@ You are an expert technical explainer. Your job is to take raw, messy, or dense 
 3.3 If the source contains a mathematical example or problem, do not alter the question or the values. Always rewrite the question as given but you can explain the solution as given if you think it could be explained better or intermediate steps are not clear, keeping the spirit of the problem intact. Keep in mind Point 3.4 and 4.1 for how to handle these cases.
 3.4 Same rule applies for mathematical derivations — if you think it could be explained better or intermediate steps are not clear, you can explain it in a better way.
 3.5 If something is ambiguous or incomplete, state the most likely interpretation briefly and move on.
+3.6 Do not invent unnecessary headings and sections. Just create the headings and sections that are necessary for the notes. If there're multiple topics within a section, use "---" to separate them and use use starting titles in bold before the topic name, like this: "**Topic name:**".
 
 **Mathematical Derivations:**
 
@@ -41,9 +42,25 @@ You are an expert technical explainer. Your job is to take raw, messy, or dense 
 ...
 \\end{aligned} for multi-line equations.
 
-4. Use \\boxed{...} when you want to highlight main formula and in solution when stating something like "Using \\boxed{...} we get ...". Do not use \\boxed{...} for the final answer of the problem.
+**CAUTIONS**:
 
-5. The format of the solution:
+For display math there must be gap of newlinw between math and the text before and after it.
+
+For example:
+
+Text before math.....
+<newline>
+$$
+math.....
+$$
+<newline>
+Text after math.....
+
+So don't compact the display math with the text before or after it.
+
+4.4. Use \\boxed{...} when you want to highlight main formula and in solution when stating something like "Using \\boxed{...} we get ...". Do not use \\boxed{...} for the final answer of the problem.
+
+4.5. The format of the solution:
 
 "Solution: "
 
@@ -161,6 +178,23 @@ Requirements:
 3. For mathematical notation use markdowns dollar symbol for inline math and use double dollar sign for display math. Use \\begin{aligned}
 ...
 \\end{aligned} for multi-line equations.
+
+**CAUTIONS**:
+
+For display math there must be gap of newlinw between math and the text before and after it.
+
+For example:
+
+Text before math.....
+<newline>
+$$
+math.....
+$$
+<newline>
+Text after math.....
+
+So don't compact the display math with the text before or after it.
+
 
 4. Use \\boxed{...} when you want to highlight main formula and in solution when stating something like "Using \\boxed{...} we get ...". Do not use \\boxed{...} for the final answer of the problem.
 
@@ -308,65 +342,216 @@ Context:
 `
 	},
 	{
-		name: 'Concept Comparison',
+		name: 'Revision Notes',
 		category: 'Learning',
 		description:
-			'Compare ideas from pasted content with similarities, differences, and use guidance.',
-		prompt: `Compare the concepts, ideas, methods, or items described in the content below.
+			'Turn book chapters or study material into dense revision notes that preserve all key ideas concisely.',
+		prompt: `Turn the content below into high-density revision notes.
+Your goal is to create concise but COMPLETE revision notes suitable for fast exam preparation and rapid rereading.
 
-Treat everything after this instruction block as the material to analyze.
-Identify the main things being compared, even if the content is messy or indirect.
+The notes should feel like carefully prepared topper-style revision notes:
+- extremely information-dense,
+- logically organized,
+- easy to scan quickly,
+- and concise without losing important meaning.
 
 Requirements:
-- Clearly identify each concept or item
-- Base the comparison on the provided content. Do not invent differences, features, or use cases that are not supported.
-- If you infer something, label it as an inference.
-- Explain similarities and differences in simple language
-- Focus on meaning, purpose, use cases, strengths, and limitations
-- Use a table when comparing two or more concepts and it improves clarity
-- Highlight when two things seem similar but are actually different
-- If the content is biased or incomplete, mention that briefly and still provide the most useful comparison
 
-Output structure:
-- Concepts being compared
-- Comparison table, if useful
-- Key similarities
-- Key differences
-- When to use which
-- One-paragraph summary`
+- Preserve ALL important concepts, definitions, formulas, terminology, assumptions, conditions, methods, and relationships from the source
+- Compress aggressively while preserving meaning
+- Remove filler, repetition, storytelling, motivational text, conversational language, and unnecessary examples
+- Focus on what is important for understanding, revision, and recall
+- Keep explanations short but conceptually complete
+- Preserve important notation, equations, formulas, and symbols exactly as written
+- If formulas appear, briefly explain what they represent and when they are used
+- If derivations appear, summarize the key logical flow and critical steps only
+- If the source contains lists, comparisons, classifications, workflows, or processes, convert them into compact structured notes or tables
+- Explain technical terms briefly the first time they appear
+- Preserve important distinctions, assumptions, edge cases, limitations, and conditions
+- Keep related concepts grouped together
+- Organize the material in the most logical learning order, even if the source is messy
+- Prefer compact paragraphs, bullets, tables, and structured formatting over long prose
+- Keep the tone direct and academic
+
+CRITICAL STYLE RULES:
+
+- Write the notes directly as knowledge
+- Do NOT use meta-source language such as:
+  "the book says",
+  "the chapter explains",
+  "according to the text",
+  "the author discusses",
+  "this section introduces",
+  "the lecture mentions",
+  or similar phrasing
+- The output should read like actual revision notes, not commentary about source material
+- Do NOT use unnecessary introductions or conclusions
+- Do NOT add outside knowledge not supported by the source
+- If something is ambiguous or incomplete, briefly mark it as unclear instead of confidently inventing details
+
+Formatting Rules:
+
+- Use clean markdown headings
+- Use short dense bullets
+- Use tables when they improve compression and readability
+- Avoid giant paragraphs
+- Highlight critical formulas, assumptions, and distinctions
+- Prioritize scanability and fast revision
+- Keep wording concise but precise
+
+Output Structure:
+
+# Overview
+- Core idea of the material
+- Main objective
+- How major concepts connect
+
+# Core Revision Notes
+
+For each major topic include:
+- Key idea
+- Important definitions
+- Critical formulas / notation
+- Important assumptions or conditions
+- Relationships to other concepts
+- Common confusions or distinctions
+- Important methods / workflows / classifications
+
+# Ultra-Compact Final Revision
+Write an extremely compressed final revision section that can be reread in 1–2 minutes before an exam.
+
+---
+Context:
+
+`
 	},
 	{
-		name: 'Beginner-Friendly Notes',
+		name: 'Chapter Skim Overview',
 		category: 'Learning',
 		description:
-			'Turn raw content into clean, beginner-friendly markdown notes with intuition, source-based examples, and review cues.',
-		prompt: `Turn the content below into clear, well-structured notes written in a beginner-friendly way.
+			'Quickly skim long chapters or study material with a concise conceptual overview that preserves all major ideas and briefly explains technical concepts.',
+		prompt: `Create a concise high-level overview of the content below.
 
-Treat everything after this instruction block as source material.
-Your job is to extract, explain, and organize the important information without losing the main ideas.
+Treat everything after this instruction block as raw study material such as:
+- textbook chapters,
+- lecture notes,
+- documentation,
+- research material,
+- technical explanations,
+- or educational content.
+
+The goal is NOT detailed notes or deep explanations.
+
+The goal is to help someone quickly skim the material and understand:
+- what topics are covered,
+- what ideas matter most,
+- how the concepts connect,
+- and the overall structure of the material,
+WITHOUT missing important information.
+
+Think of this as:
+- an intelligent chapter walkthrough,
+- a compressed conceptual map,
+- or a fast-reading companion before deep study.
 
 Requirements:
-- Base the notes on the source content. Do not invent facts, definitions, examples, formulas, or context that is not present.
-- If something is ambiguous or incomplete, state the most likely interpretation briefly and label it as an assumption.
-- Write concise but complete notes in simple, easy-to-understand language
-- Break ideas into small, logical steps
-- Start with intuition first, then add details
-- Organize the notes with clear headings and bullet points
-- Capture key concepts, definitions, processes, and important details
-- Explain any technical terms or jargon in simple words when they first appear
-- Remove repetition and low-value filler
-- Preserve important terminology, but explain it briefly when needed
-- If the content is unstructured, reorganize it into a logical format
-- If the content contains examples, keep only the most useful ones and explain THEM rather than inventing new ones
-- If the content contains formulas, code, or jargon, explain what they mean in plain English while preserving the original notation and structure.
-- Use short paragraphs and clean markdown structure
 
-Output structure:
-- Intuition
-- Beginner-friendly notes
-- Key takeaways
-- Things worth memorizing or reviewing
-- One quick check question`
+- Preserve ALL major concepts, topics, definitions, formulas, methods, workflows, and important relationships
+- Be highly concise while still complete at a conceptual level
+- Focus on the "big picture" and core ideas rather than detailed derivations or exhaustive explanations
+- Remove repetition, filler, storytelling, side comments, and low-value details
+- Summarize examples briefly instead of fully expanding them
+- Preserve important terminology, notation, formulas, algorithms, APIs, code structures, and technical concepts
+- Briefly explain technical terms when first introduced
+
+IMPORTANT FOR MATH / CODE / TECHNICAL CONTENT:
+
+- Do NOT merely mention formulas, algorithms, functions, or code concepts by name
+- Briefly explain:
+  - what they do,
+  - why they matter,
+  - and how they connect to the surrounding concepts
+- If mathematical formulas appear:
+  - preserve the important formulas,
+  - explain what each variable represents when necessary,
+  - and briefly state the purpose or intuition behind the formula
+- If derivations appear:
+  - summarize the main logical flow and key insight only
+- If code appears:
+  - summarize the purpose of the code,
+  - key logic,
+  - important functions/classes,
+  - and how the implementation fits into the overall topic
+- If algorithms or models appear:
+  - briefly explain their inputs, outputs, and core idea
+- Keep explanations concise and high-level rather than step-by-step
+
+Additional Requirements:
+
+- If the content is messy or unstructured, reorganize it logically
+- Keep related concepts grouped together
+- Emphasize how topics connect and build on each other
+- Preserve important assumptions, conditions, limitations, and distinctions
+- Do NOT invent outside information or unsupported interpretations
+- If something is ambiguous or incomplete, briefly mention the uncertainty instead of guessing
+
+CRITICAL STYLE RULES:
+
+- Write directly as knowledge
+- Do NOT use meta-source language such as:
+  "the book says",
+  "the chapter explains",
+  "according to the text",
+  "the author discusses",
+  "this section introduces",
+  or similar phrasing
+- The result should read like a clean conceptual overview, not commentary about source material
+- Keep the tone direct, compact, and easy to skim
+- Prefer conceptual compression over excessive detail
+
+Formatting Rules:
+
+- Use clean markdown headings
+- Use concise bullets and short paragraphs
+- Use tables only when they significantly improve clarity
+- Avoid giant blocks of text
+- Prioritize readability and scanability
+- Keep the structure lightweight and fast to read
+
+Output Structure:
+
+# Big Picture
+- What the material is mainly about
+- Main objective
+- Overall conceptual flow
+
+# Main Topics Covered
+For each major topic:
+- Core idea
+- Why it matters
+- Key concepts / formulas / algorithms / code ideas
+- Important assumptions or distinctions
+- Relationship to other topics
+
+# Key Technical Concepts
+Briefly explain the most important:
+- formulas,
+- derivations,
+- algorithms,
+- models,
+- code structures,
+- or implementation ideas.
+
+# Key Connections
+Explain how the major ideas build on or relate to each other.
+
+# Quick Takeaways
+Provide a final concise skim-style summary of the most important points.
+
+---
+Context:
+
+`
 	},
 	{
 		name: 'Code Generation',
