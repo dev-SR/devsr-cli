@@ -1,162 +1,263 @@
-# CLI
+# devsr CLI
 
-<!-- TOC -->
+CLI helper tool for generating templates, downloading YouTube videos with `yt-dlp`, converting Markdown to PDF, and using reusable AI prompt blocks.
 
-- [CLI](#cli)
-  - [Setup](#setup)
-    - [🔨 Build \& link locally with pnpm](#-build--link-locally-with-pnpm)
-      - [Re-build \& re-link (if already linked globally)](#re-build--re-link-if-already-linked-globally)
-    - [📦 Publish to npm (public package)](#-publish-to-npm-public-package)
-    - [🔁 Updating during dev](#-updating-during-dev)
-  - [`yt-dlp` setups](#yt-dlp-setups)
+## Table of Contents
+
+- [devsr CLI](#devsr-cli)
+  - [Table of Contents](#table-of-contents)
+  - [Requirements](#requirements)
+  - [Installation](#installation)
+    - [Local development setup](#local-development-setup)
+    - [Make the CLI globally available](#make-the-cli-globally-available)
+    - [Update after code changes](#update-after-code-changes)
+    - [Unlink the global CLI](#unlink-the-global-cli)
+  - [Publishing to npm](#publishing-to-npm)
+  - [`yt-dlp` Setup](#yt-dlp-setup)
+  - [`yt-dlp` Useful Commands](#yt-dlp-useful-commands)
   - [AI Prompt Blocks](#ai-prompt-blocks)
     - [Adding New Prompts](#adding-new-prompts)
       - [1. Define the prompt in `src/tools/prompt-library.ts`](#1-define-the-prompt-in-srctoolsprompt-libraryts)
       - [2. Register the shortcut in `src/index.ts`](#2-register-the-shortcut-in-srcindexts)
 
-## Setup
+## Requirements
 
-### 🔨 Build & link locally with pnpm
+- Node.js
+- pnpm
+- TypeScript
+- Python and `pip`, only needed for `yt-dlp`
+- FFmpeg, only needed for video/audio merging
+
+## Installation
+
+### Local development setup
+
+Install dependencies:
 
 ```bash
-# 1. Install dependencies
 pnpm install
+```
 
-# 2. Dev run 
+If pnpm blocks dependency build scripts, approve the required package builds:
+
+```bash
+pnpm approve-builds
+pnpm install
+```
+
+Run the CLI in development mode:
+
+```bash
 pnpm dev
+```
 
-# Publish locally in global 
-# 3. Build project (make sure "build" script exists in package.json)
+Build the project:
+
+```bash
 pnpm run build
+```
 
-# 3.1 Creates a global bin directory
+The compiled output should be generated in:
+
+```bash
+dist/
+```
+
+### Make the CLI globally available
+
+Your `package.json` should contain a `bin` entry like this:
+
+```json
+{
+  "bin": {
+    "devsr": "dist/index.js"
+  }
+}
+```
+
+Make sure your CLI entry file starts with a Node shebang.
+
+At the top of `src/index.ts`:
+
+```ts
+#!/usr/bin/env node
+```
+
+Build and link the package globally:
+
+```bash
+pnpm run build
+pnpm link --global .
+```
+
+Now the CLI should be available from anywhere:
+
+```bash
+devsr
+```
+
+Check where the command is linked:
+
+```bash
+which devsr
+```
+
+If pnpm says the global bin directory is not in `PATH`, run:
+
+```bash
 pnpm setup
-
-# 3.2 Link globally (makes dev-sr command available everywhere)
-pnpm link --global
+source ~/.zshrc
 ```
 
-#### Re-build & re-link (if already linked globally)
+For Bash users, reload Bash instead:
+
+```bash
+source ~/.bashrc
+```
+
+### Update after code changes
+
+After editing the CLI source code, rebuild the project:
 
 ```bash
 pnpm run build
-pnpm unlink --global
-pnpm link --global
 ```
 
-### 📦 Publish to npm (public package)
+Because the package is already linked globally, the `devsr` command should use the latest build automatically.
 
-First, make sure you’re logged in:
+### Unlink the global CLI
 
-`pnpm login`
-
-Then publish:
+To remove the globally linked command:
 
 ```bash
-# get token from https://www.npmjs.com/settings/username/tokens ; 'Bypass two-factor authentication (2FA)' if required
+pnpm unlink --global @dev-sr/devsr
+```
+
+If needed, you can also check globally linked packages:
+
+```bash
+pnpm list --global --depth 0
+```
+
+## Publishing to npm
+
+Log in to npm:
+
+```bash
+pnpm login
+```
+
+Or configure an npm token:
+
+```bash
 npm config set //registry.npmjs.org/:_authToken=YOUR_TOKEN
+```
 
-pnpm publish --access=public
+Before publishing, build the project:
 
-# When creating new version use
+```bash
+pnpm run build
+```
+
+Publish as a public scoped package:
+
+```bash
+pnpm publish --access public
+```
+
+Update the package version before publishing a new release:
+
+```bash
 pnpm version patch
 pnpm version minor
 pnpm version major
 ```
 
----
+Use only one version command depending on the type of release.
 
-### 🔁 Updating during dev
+## `yt-dlp` Setup
 
-When you edit the CLI:
-
-`pnpm run build`
-
-It’s already linked globally, so `dev-sr` will pick up the changes automatically.
-
----
-
-⚡ Extra tip: If you want to unlink later:
-
-`pnpm unlink --global`
-
-## `yt-dlp` setups
-
-1. Install `yt-dlp`
+Install `yt-dlp`:
 
 ```bash
 pip install -U yt-dlp
 ```
 
-2. Install `winget`
+Install FFmpeg.
+
+On Ubuntu/Debian:
 
 ```bash
-winget install "FFmpeg (Essentials Build)"
-# linux
+sudo apt update
 sudo apt install ffmpeg -y
 ```
 
-3. Download youtube cookies with logged in using [Get cookies.txt LOCALLY - Chrome Web Store](https://chromewebstore.google.com/detail/get-cookiestxt-locally/cclelndahbckbenkjhflpdbgdldlbecc?pli=1) extension.
+On Windows:
 
-First time using  `devsr` you have enter full path to the cookies.txt file, but after that it will be saved in `config.json` for future use.
+```powershell
+winget install "FFmpeg (Essentials Build)"
+```
+
+For YouTube downloads that require login, export cookies from your browser using a cookies.txt extension, such as:
+
+[Get cookies.txt LOCALLY - Chrome Web Store](https://chromewebstore.google.com/detail/get-cookiestxt-locally/cclelndahbckbenkjhflpdbgdldlbecc)
+
+The first time you use the `devsr` YouTube downloader, enter the full path to your `cookies.txt` file. The path will be saved in `config.json` for future use.
+
+To find the full path of the current directory:
 
 ```bash
 pwd
 ```
 
+## `yt-dlp` Useful Commands
 
-`yt-dlp ` commands:
-
-1. List all available formats
+List all available formats:
 
 ```bash
 yt-dlp -F URL
 ```
 
-2. Download video + audio separately and merge 
-   
-   examples:
+Download video and audio separately, then merge:
 
 ```bash
 yt-dlp -f "140+136" --cookies cookies.txt URL
 ```
 
+Download 1080p video-only format with audio and merge as MP4:
+
 ```bash
 yt-dlp -f "140+137" --merge-output-format mp4 --cookies cookies.txt URL
 ```
 
-  👉 downloads `137` (1080p video-only) + `140` (m4a audio), then merges into one file.
+Download best video and best audio:
 
-3. Advance options
-   
-   1. **best audio + best video:**
-      
-      ```bash
-      yt-dlp -f "bv+ba" URL
-      ```
-      
-      ```bash
-      yt-dlp -f "bv+ba/b" URL
-      ```
+```bash
+yt-dlp -f "bv+ba" URL
+```
 
-            `-f "bv+ba/b"` means:
+Download best video and best audio, with fallback to best single file:
 
-- Try downloading the **best video stream** + **best audio stream** separately, then merge them.
+```bash
+yt-dlp -f "bv+ba/b" URL
+```
 
-- If that fails (site doesn’t provide separate streams), fall back to the **best single file** that already contains both video and audio.
-  
-  2. **Best video ≤1080p with best audio**:
-     
-     ```bash
-     yt-dlp -f "bv[height<=1080]+ba" URL
-     ```
+Meaning:
 
+- `bv+ba` downloads the best video stream and best audio stream separately, then merges them.
+- `/b` falls back to the best single file if separate streams are not available.
+
+Download best video up to 1080p with best audio:
+
+```bash
+yt-dlp -f "bv[height<=1080]+ba" URL
+```
 
 ## AI Prompt Blocks
 
-Inside `Misc Utils`, there is now an `AI Prompt Blocks` utility for reusable instruction blocks that go before pasted user content.
+Inside `Misc Utils`, the `AI Prompt Blocks` utility provides reusable instruction blocks that can be placed before pasted user content.
 
-It includes prompt templates for:
+Current prompt templates include:
 
 - simple explanation
 - notes generation
@@ -172,13 +273,16 @@ It includes prompt templates for:
 
 Recommended workflow:
 
-1. Copy your source content first.
-2. Open `devsr` → `Misc Utils` → `AI Prompt Blocks`.
-3. Pick a prompt.
-4. Choose `Merge with clipboard and copy back`.
-5. Paste the merged result into your AI tool.
+1. Copy your source content.
+2. Open `devsr`.
+3. Go to `Misc Utils`.
+4. Open `AI Prompt Blocks`.
+5. Pick a prompt.
+6. Choose `Merge with clipboard and copy back`.
+7. Paste the merged result into your AI tool.
 
 You can also choose `Copy prompt block only` if you want to paste the source content manually after the instruction block.
+
 Clipboard support uses common system tools:
 
 - macOS: `pbcopy` / `pbpaste`
@@ -188,46 +292,62 @@ Clipboard support uses common system tools:
 
 ### Adding New Prompts
 
-To add a new prompt template and register it as a command:
+To add a new prompt template and register it as a command, follow these steps.
 
 #### 1. Define the prompt in `src/tools/prompt-library.ts`
 
-Add a new object to the `promptTemplates` array. The logic in `src/tools/prompt-blocks.ts` automatically picks up new templates, so **no changes are needed in `prompt-blocks.ts`.**
+Add a new object to the `promptTemplates` array:
 
-```typescript
+```ts
 {
   name: 'My New Prompt',
   category: 'Learning', // Valid categories: 'Learning' | 'Coding' | 'Productivity'
   description: 'A brief description of what this prompt does.',
   prompt: `The actual prompt text goes here.
-  
+
 Context:
 
 `
 }
 ```
 
+The logic in `src/tools/prompt-blocks.ts` automatically picks up new templates, so no changes are needed there.
+
 #### 2. Register the shortcut in `src/index.ts`
 
-To make your prompt available as a direct command (e.g., `devsr prompt-my-new-one`), add it to the `shortcuts` and `shortcutDescriptions` objects:
+To make your prompt available as a direct command, for example:
 
-```typescript
-// 1. Add to shortcuts object in src/index.ts
+```bash
+devsr prompt-my-new-one
+```
+
+add it to the `shortcuts` object:
+
+```ts
 const shortcuts: Record<string, ShortcutCommand> = {
-  // ... existing shortcuts
+  // ...existing shortcuts
   'prompt-my-new-one': {
     tool: 'prompt-blocks',
     category: 'Learning',
-    template: 'My New Prompt', // Must match the 'name' in prompt-library.ts
-    action: 'clipboard-merge' // 'clipboard-merge', 'clipboard-prompt', or 'print'
+    template: 'My New Prompt', // Must match the name in prompt-library.ts
+    action: 'clipboard-merge' // clipboard-merge, clipboard-prompt, or print
   },
 };
+```
 
-// 2. Add to shortcutDescriptions object in src/index.ts
+Then add it to the `shortcutDescriptions` object:
+
+```ts
 const shortcutDescriptions: Record<string, string> = {
-  // ... existing descriptions
+  // ...existing descriptions
   'prompt-my-new-one': 'Description for the help menu'
 };
 ```
 
-After rebuilding (`pnpm run build`), your new prompt will be available via `devsr prompt-my-new-one` and in the interactive menus.
+Rebuild the project:
+
+```bash
+pnpm run build
+```
+
+The new prompt will be available through the direct command and the interactive menus.

@@ -8,10 +8,13 @@
   },
   "scripts": {
     "build": "tsc",
-    "dev": "ts-node src/index.ts"
+    "dev": "ts-node src/index.ts",
+    "link:global": "pnpm run build && pnpm link --global .",
+    "unlink:global": "pnpm unlink --global @dev-sr/devsr"
   },
   "dependencies": {
     "@clack/prompts": "^0.7.0",
+    "@dev-sr/devsr": "link:",
     "fs-extra": "^11.1.1",
     "katex": "^0.16.45",
     "marked-katex-extension": "^5.1.8",

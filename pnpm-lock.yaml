@@ -5,7 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  global: link:../../../../.local/share/pnpm/global/5/node_modules/global
+  '@dev-sr/devsr': 'link:'
 
 importers:
 
@@ -14,12 +14,12 @@ importers:
       '@clack/prompts':
         specifier: ^0.7.0
         version: 0.7.0
+      '@dev-sr/devsr':
+        specifier: 'link:'
+        version: 'link:'
       fs-extra:
         specifier: ^11.1.1
         version: 11.3.1
-      global:
-        specifier: link:../../../../.local/share/pnpm/global/5/node_modules/global
-        version: link:../../../../.local/share/pnpm/global/5/node_modules/global
       katex:
         specifier: ^0.16.45
         version: 0.16.45

@@ -4,6 +4,7 @@ import promptBlocks from './tools/prompt-blocks';
 import youtubeDownloader from './tools/youtube';
 import mdConverter from './tools/md-converter';
 import miscUtils from './tools/misc-utils';
+import catFilesToSingleFile from './tools/catFilesToSingleFile';
 
 // Define shortcut commands that bypass prompts
 interface ShortcutCommand {
@@ -116,7 +117,7 @@ async function main() {
 			choice = options.tool;
 		} else {
 			// Try direct tool selection
-			const validTools = ['prompt-blocks', 'yt', 'md-convert', 'misc'];
+			const validTools = ['prompt-blocks', 'yt', 'md-convert', 'misc', 'catFiles'];
 			if (validTools.includes(command)) {
 				choice = command;
 			} else {
@@ -138,6 +139,7 @@ async function main() {
 				{ value: 'yt', label: '🎬 YouTube Downloader' },
 				{ value: 'md-convert', label: '📄 Markdown Converter' },
 				{ value: 'misc', label: '🧰 Misc Utils' },
+				{ value: 'catFiles', label: '📄 Cat Files to Single File' },
 				{ value: 'exit', label: '❌ Exit' }
 			]
 		});
@@ -167,6 +169,9 @@ async function main() {
 			break;
 		case 'misc':
 			await miscUtils();
+			break;
+		case 'catFiles':
+			await catFilesToSingleFile();
 			break;
 		default:
 			break;
