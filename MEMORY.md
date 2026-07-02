@@ -11,6 +11,7 @@ The CLI currently provides:
 - AI prompt blocks that can be printed, copied, or merged with clipboard content.
 - YouTube downloading through `yt-dlp` and `ffmpeg`.
 - Markdown conversion to PDF/HTML/DOCX/EPUB/LaTeX.
+- Jupyter Notebook conversion (.py <-> .ipynb) via Jupytext.
 - Misc utilities, currently Markdown heading transformation.
 - Some .NET generation helpers exist in source but are not wired into the main CLI menu at the time this file was written.
 
@@ -36,6 +37,7 @@ The CLI currently provides:
 - `src/tools/prompt-blocks.ts`: Interactive prompt-template picker and clipboard actions.
 - `src/tools/youtube.ts`: YouTube downloader flow using `yt-dlp`, `ffmpeg`, and saved cookie path.
 - `src/tools/md-converter.ts`: Converts Markdown files in the current working directory. Uses `md-to-pdf` for PDF and `pandoc` for other formats.
+- `src/tools/jupyter.ts`: Converts python scripts to Jupyter Notebook (.ipynb) and vice versa using Jupytext in the current working directory.
 - `src/tools/misc-utils.ts`: Misc CLI utilities. Currently transforms README Markdown heading levels by selected line range.
 - `src/config.ts`: Reads/writes `~/.dev-sr-config.json`.
 - `src/utils.ts`: Small dependency and cookie-path helpers.

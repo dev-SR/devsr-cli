@@ -288,31 +288,43 @@ Context:`
 		category: 'Learning',
 		description:
 			'Turn messy YouTube captions into clear learning notes by inferring context and structure.',
-		prompt: `Turn the YouTube captions below into clear, well-structured learning notes.
+		prompt: `**Turn the YouTube captions below into clear, well-structured learning notes.**
 
-Treat everything after this instruction block as raw YouTube caption text.
-Do not ask me to reformat it. Work with it as-is, even if it is messy, repetitive, auto-generated, missing punctuation, or split into awkward transcript fragments.
+Treat everything after this instruction block as raw YouTube caption text. Do not ask me to reformat it. Work with it as-is, even if it is messy, repetitive, auto-generated, missing punctuation, or split into awkward transcript fragments.
 
-Important context:
+**Important context:**
 - YouTube captions often do not include mathematical notation, diagrams, slide text, code formatting, or exact technical symbols that may have appeared visually in the video.
 - Infer the likely topic, structure, and missing context from the spoken words, but do not pretend uncertain details are explicitly present.
 - If the speaker refers to something visual, such as "this equation", "the graph", "here", or "this value", explain the most likely meaning and label it as an inference.
 
-Requirements:
-- Start by identifying the likely topic and learning goal of the video
-- Convert the transcript into clean markdown notes with clear headings
-- Preserve any timestamps if they are useful for finding sections in the video
-- Remove filler, repeated phrases, sponsorship-style interruptions, and low-value conversational noise
-- Reconstruct the speaker's ideas into a logical order, even if the captions are out of order or fragmented
-- Explain concepts in beginner-friendly language with intuition first, then details
-- Preserve important terms, definitions, names, steps, and examples from the captions
-- When mathematical, scientific, coding, or technical notation seems missing, write the concept in plain English and optionally include a likely notation only if it is strongly implied
-- If an exact formula, symbol, diagram detail, or code snippet is not present in the captions, state that it is not available from the transcript instead of inventing it
-- If the captions contain examples, explain those examples rather than creating unrelated ones
-- If something is ambiguous, state the most likely interpretation and continue
-- CRITICAL: Do not use language like "The captions say...", "The speaker illustrates...","This lecture begins.., "The transcript mentions...". This type of meta language of explicitly referring to the source material is not needed. Just write the notes directly.
+**Requirements:**
+- Start by identifying the likely topic and learning goal of the video.
+- Convert the transcript into clean markdown notes with clear headings.
+- Preserve any timestamps if they are useful for finding sections in the video.
+- Remove filler, repeated phrases, sponsorship-style interruptions, and low-value conversational noise.
+- Reconstruct the speaker's ideas into a logical order, even if the captions are out of order or fragmented.
+- Explain concepts in beginner-friendly language with intuition first, then details.
+- Preserve important terms, definitions, names, steps, and examples from the captions.
 
-Context:
+**1. Mathematical & Technical Notation**
+- If the speaker **verbally describes** a formula, equation, or mathematical relationship (e.g., *"the policy pi of a given s is the probability of taking action a given state s"*), **reconstruct and present the standard formal notation** using LaTeX. Base the notation strictly on what the speaker describes.
+- If the speaker **names standard concepts** that have well-established notation (e.g., Bellman equation, Q-function, expectation, discount factor gamma, Markov transition probabilities), **include the standard notation** even if the caption only uses spoken words.
+- If the speaker refers to a visual formula or slide but the caption text does not contain enough information to reconstruct it with confidence, state the concept in plain English and note that the exact symbolic form is not available from the transcript.
+- If a formula, symbol, or code snippet is **not discussed at all** in the captions, do not invent it.
+
+**2. Visual Context & Diagrams**
+- If the speaker references a diagram, graph, or on-screen equation, describe the most likely content and label it clearly as an inference.
+- If the user has provided supplementary images (e.g., screenshots of slides) alongside the transcript, use those images to extract exact formulas, symbols, and diagram labels, and integrate them into the notes.
+
+**3. Examples & Edge Cases**
+- If the captions contain examples, explain those examples rather than creating unrelated ones.
+- If something is ambiguous, state the most likely interpretation and continue.
+
+**4. Tone & Style**
+- Do not use meta-language like "The captions say...", "The speaker illustrates...", "This lecture begins...", or "The transcript mentions...". Write the notes directly as authoritative content.
+- Use markdown formatting for clarity: headings, bullet points, bold text, and LaTeX math blocks.
+
+**Context:**
 
 `
 	},
