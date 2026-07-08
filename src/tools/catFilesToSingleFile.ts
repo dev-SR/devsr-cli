@@ -1,4 +1,4 @@
-import { intro, text, note, cancel, isCancel } from '@clack/prompts';
+import { intro, text, confirm, note, cancel, isCancel } from '@clack/prompts';
 import fs from 'fs';
 import path from 'path';
 
@@ -36,9 +36,10 @@ function validateOutputPath(filePath: string): boolean {
 	}
 }
 
-export default async function catFilesToSingleFile() {
-	intro('📄 Combine Files');
-
+async function appendDirToStream(
+	outputStream: fs.WriteStream,
+	resolvedOutputFile: string
+): Promise<number> {
 	const inputDir = await text({
 		message: 'Enter input directory path:',
 		placeholder: './my-folder',
@@ -54,10 +55,43 @@ export default async function catFilesToSingleFile() {
 	});
 
 	if (isCancel(inputDir)) {
-		cancel('Exiting...');
-		process.exit(0);
+		return -1; // signal exit
 	}
 
+	const resolvedInputDir = path.resolve(inputDir as string);
+	const files = getAllFiles(resolvedInputDir);
+
+	if (files.length === 0) {
+		note('No files found in the input directory — skipping.', '⚠️ Empty');
+		return 0;
+	}
+
+	for (const file of files) {
+		const relativePath = path.relative(resolvedInputDir, file);
+
+		outputStream.write(`===== ${relativePath} =====\n`);
+
+		try {
+			const content = fs.readFileSync(file, 'utf-8');
+			outputStream.write(content);
+			outputStream.write('\n\n');
+		} catch {
+			outputStream.write(`[Could not read file: ${relativePath}]\n\n`);
+		}
+	}
+
+	note(
+		`Appended ${files.length} file(s) from:\n  ${resolvedInputDir}\n\nOutput: ${resolvedOutputFile}`,
+		'✅ Done'
+	);
+
+	return files.length;
+}
+
+export default async function catFilesToSingleFile() {
+	intro('📄 Combine Files');
+
+	// ── Output file (asked once) ──────────────────────────────────────────────
 	const defaultOutputFile = path.resolve(process.cwd(), 'output.txt');
 
 	const outputFile = await text({
@@ -79,35 +113,62 @@ export default async function catFilesToSingleFile() {
 		process.exit(0);
 	}
 
-	const resolvedInputDir = path.resolve(inputDir as string);
 	const resolvedOutputFile = path.resolve((outputFile as string).trim() || defaultOutputFile);
 
-	const files = getAllFiles(resolvedInputDir);
+	// ── Append vs overwrite (only relevant when file already exists) ──────────
+	let streamFlag = 'w'; // default: create fresh
 
-	if (files.length === 0) {
-		cancel('No files found in the input directory.');
-		process.exit(0);
+	if (fs.existsSync(resolvedOutputFile)) {
+		const shouldAppend = await confirm({
+			message: `output.txt already exists — append to it?`,
+			initialValue: true   // default: Yes (append)
+		});
+
+		if (isCancel(shouldAppend)) {
+			cancel('Exiting...');
+			process.exit(0);
+		}
+
+		streamFlag = shouldAppend ? 'a' : 'w';
 	}
 
 	const outputStream = fs.createWriteStream(resolvedOutputFile, {
-		encoding: 'utf-8'
+		encoding: 'utf-8',
+		flags: streamFlag
 	});
 
-	for (const file of files) {
-		const relativePath = path.relative(resolvedInputDir, file);
+	let totalFiles = 0;
 
-		outputStream.write(`===== ${relativePath} =====\n`);
+	// ── Loop: add directory → ask to continue ─────────────────────────────────
+	while (true) {
+		const added = await appendDirToStream(outputStream, resolvedOutputFile);
 
-		try {
-			const content = fs.readFileSync(file, 'utf-8');
-			outputStream.write(content);
-			outputStream.write('\n\n');
-		} catch {
-			outputStream.write(`[Could not read file: ${relativePath}]\n\n`);
+		if (added === -1) {
+			// User cancelled the directory prompt → exit
+			outputStream.end();
+			cancel('Exiting...');
+			process.exit(0);
 		}
+
+		totalFiles += added;
+
+		// ── Options ──────────────────────────────────────────────────────────
+		const addAnother = await confirm({
+			message: 'Add from separate directory path?',
+			initialValue: false   // default: No
+		});
+
+		if (isCancel(addAnother) || !addAnother) {
+			// "No" (default) or Ctrl-C → exit the loop
+			break;
+		}
+		// "Yes" → loop back and ask for the next directory
 	}
 
 	outputStream.end();
 
-	note(`Combined ${files.length} files into:\n${resolvedOutputFile}`, '✅ Done');
+	note(
+		`Total files combined: ${totalFiles}\nOutput: ${resolvedOutputFile}`,
+		'✅ All done'
+	);
 }
