@@ -1,4 +1,4 @@
-import { intro, text, confirm, note, cancel, isCancel } from '@clack/prompts';
+import { intro, text, confirm, multiselect, note, cancel, isCancel } from '@clack/prompts';
 import fs from 'fs';
 import path from 'path';
 
@@ -59,14 +59,45 @@ async function appendDirToStream(
 	}
 
 	const resolvedInputDir = path.resolve(inputDir as string);
-	const files = getAllFiles(resolvedInputDir);
+	const allFiles = getAllFiles(resolvedInputDir);
 
-	if (files.length === 0) {
+	if (allFiles.length === 0) {
 		note('No files found in the input directory — skipping.', '⚠️ Empty');
 		return 0;
 	}
 
-	for (const file of files) {
+	// ── All files or pick specific ones? (default: All) ───────────────────────
+	const pickSpecific = await confirm({
+		message: `Found ${allFiles.length} file(s) — pick specific files?`,
+		initialValue: false   // default: No → use all
+	});
+
+	if (isCancel(pickSpecific)) {
+		return -1;
+	}
+
+	let selectedFiles: string[];
+
+	if (pickSpecific) {
+		const picked = await multiselect({
+			message: 'Select files to include (Space to toggle, Enter to confirm):',
+			options: allFiles.map((f) => ({
+				value: f,
+				label: path.relative(resolvedInputDir, f)
+			})),
+			required: true
+		});
+
+		if (isCancel(picked)) {
+			return -1;
+		}
+
+		selectedFiles = picked as string[];
+	} else {
+		selectedFiles = allFiles;
+	}
+
+	for (const file of selectedFiles) {
 		const relativePath = path.relative(resolvedInputDir, file);
 
 		outputStream.write(`===== ${relativePath} =====\n`);
@@ -81,11 +112,11 @@ async function appendDirToStream(
 	}
 
 	note(
-		`Appended ${files.length} file(s) from:\n  ${resolvedInputDir}\n\nOutput: ${resolvedOutputFile}`,
+		`Appended ${selectedFiles.length} file(s) from:\n  ${resolvedInputDir}\n\nOutput: ${resolvedOutputFile}`,
 		'✅ Done'
 	);
 
-	return files.length;
+	return selectedFiles.length;
 }
 
 export default async function catFilesToSingleFile() {
